@@ -15,9 +15,25 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity
         (foreignKeys = {@ForeignKey(entity = Encuesta.class,
                 parentColumns = "enid",
-                childColumns = "enid",
+                childColumns = "eId",
                 onDelete = CASCADE)})
 public class ChoiceQuestion {
+    @PrimaryKey(autoGenerate = true)
+    private int choice_q_id;
+
+    @ColumnInfo(name = "enunciado")
+    private String enunciado;
+    private int eId;
+
+
+    public int getEId() {
+        return eId;
+    }
+
+    public void setEId(int eId) {
+        this.eId = eId;
+    }
+
 
     public int getChoice_q_id() {
         return choice_q_id;
@@ -35,9 +51,5 @@ public class ChoiceQuestion {
         this.enunciado = enunciado;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int choice_q_id;
 
-    @ColumnInfo(name = "enunciado")
-    private String enunciado;
 }

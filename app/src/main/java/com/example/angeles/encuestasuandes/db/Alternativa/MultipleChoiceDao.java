@@ -18,7 +18,7 @@ public interface MultipleChoiceDao {
     @Query("SELECT * FROM multiplechoice")
     List<MultipleChoice> getAllMultipleChoice();
     @Query("SELECT * FROM multiplechoice WHERE multiple_choice_id=:m_id LIMIT 1")
-    User getOneMultipleChoice(int m_id);
+    MultipleChoice getOneMultipleChoice(int m_id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(MultipleChoice... multipleChoices);

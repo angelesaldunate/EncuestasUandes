@@ -16,9 +16,16 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity
         (foreignKeys = {@ForeignKey(entity = MultipleQuestion.class,
                 parentColumns = "multiple_q_id",
-                childColumns = "multiple_q_id",
+                childColumns = "multipleQId",
                 onDelete = CASCADE)})
 public class MultipleChoice {
+    @PrimaryKey(autoGenerate = true)
+    private int multiple_choice_id;
+    @ColumnInfo(name = "content")
+    private String content;
+    private int multipleQId;
+
+
     public int getMultiple_choice_id() {
         return multiple_choice_id;
     }
@@ -35,9 +42,15 @@ public class MultipleChoice {
         this.content = content;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int multiple_choice_id;
 
-    @ColumnInfo(name = "content")
-    private String content;
+
+    public int getMultipleQId() {
+        return multipleQId;
+    }
+
+    public void setMultipleQId(int multipleQId) {
+        this.multipleQId = multipleQId;
+    }
+
+
 }

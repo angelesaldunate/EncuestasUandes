@@ -17,7 +17,7 @@ public interface SimpleChoiceDao {
     @Query("SELECT * FROM simplechoice")
     List<SimpleChoice> getAllSimpleChoices();
     @Query("SELECT * FROM simplechoice WHERE simple_choice_id=:s_id LIMIT 1")
-    User getOneSimpleChoice(int s_id);
+    SimpleChoice getOneSimpleChoice(int s_id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(SimpleChoice... simpleChoices);

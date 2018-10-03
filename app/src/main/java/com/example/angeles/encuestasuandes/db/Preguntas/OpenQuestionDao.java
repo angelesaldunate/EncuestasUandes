@@ -15,7 +15,7 @@ public interface OpenQuestionDao {
     @Query("SELECT * FROM openquestion")
     List<OpenQuestion> getAllOpenQ();
     @Query("SELECT * FROM openquestion WHERE open_q_id=:op_id LIMIT 1")
-    MultipleQuestion getOneOpenQuestion(int op_id);
+    OpenQuestion getOneOpenQuestion(int op_id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(OpenQuestion... openQuestions);

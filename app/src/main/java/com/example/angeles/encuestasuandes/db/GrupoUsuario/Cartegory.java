@@ -9,6 +9,14 @@ import android.arch.persistence.room.PrimaryKey;
  */
 @Entity
 public class Cartegory {
+    @PrimaryKey(autoGenerate = true)
+    private int category_id;
+
+    @ColumnInfo(name= "name")
+    private String name;
+
+
+
     public int getCategory_id() {
         return category_id;
     }
@@ -25,9 +33,5 @@ public class Cartegory {
         this.name = name;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int category_id;
 
-    @ColumnInfo(name= "name")
-    private String name;
 }

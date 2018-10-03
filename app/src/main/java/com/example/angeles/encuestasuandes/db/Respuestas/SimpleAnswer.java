@@ -18,9 +18,32 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 childColumns = "userId",
                 onDelete = CASCADE), @ForeignKey(entity = OpenQuestion.class,
                 parentColumns = "simple_choice_id",
-                childColumns = "simple_choice_id",
+                childColumns = "simpleChoiceId",
                 onDelete = CASCADE)})
 public class SimpleAnswer {
+    @PrimaryKey(autoGenerate = true)
+    private int multiple_answer_id;
+    private int simpleChoiceId;
+    private int userId;
+
+
+    public int getUserId() {
+        return userId;
+    }
+
+    public void setUserId(int userId) {
+        this.userId = userId;
+    }
+
+
+    public int getSimpleChoiceId() {
+        return simpleChoiceId;
+    }
+
+    public void setSimpleChoiceId(int simpleChoiceId) {
+        this.simpleChoiceId = simpleChoiceId;
+    }
+
 
     public int getMultiple_answer_id() {
         return multiple_answer_id;
@@ -30,8 +53,7 @@ public class SimpleAnswer {
         this.multiple_answer_id = multiple_answer_id;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int multiple_answer_id;
+
 
 
 

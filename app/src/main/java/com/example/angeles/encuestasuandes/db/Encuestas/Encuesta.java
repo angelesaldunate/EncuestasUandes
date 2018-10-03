@@ -38,6 +38,8 @@ public class Encuesta {
 
     @ColumnInfo(name = "min_responses")
     private int min_responses;
+
+
     public int getEnid() {
         return enid;
     }

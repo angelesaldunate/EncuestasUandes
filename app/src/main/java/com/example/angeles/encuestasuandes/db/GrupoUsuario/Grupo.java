@@ -15,9 +15,28 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 @Entity
         (foreignKeys = {@ForeignKey(entity = User.class,
                 parentColumns = "category_id",
-                childColumns = "category_id",
+                childColumns = "categoryId",
                 onDelete = CASCADE)})
 public class Grupo {
+
+    @PrimaryKey(autoGenerate = true)
+    private int group_id;
+    @ColumnInfo(name = "tag")
+    private String tag;
+    @ColumnInfo(name = "is_editable")
+    private boolean is_editable;
+    private int categoryId;
+
+
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
 
     public int getGroup_id() {
         return group_id;
@@ -43,13 +62,6 @@ public class Grupo {
         this.is_editable = is_editable;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int group_id;
 
-    @ColumnInfo(name = "tag")
-    private String tag;
-
-    @ColumnInfo(name = "is_editable")
-    private boolean is_editable;
 
 }
