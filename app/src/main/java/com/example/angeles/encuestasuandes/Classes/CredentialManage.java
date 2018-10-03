@@ -1,4 +1,4 @@
-package com.example.angeles.encuestasuandes;
+package com.example.angeles.encuestasuandes.Classes;
 
 import android.app.Activity;
 import android.content.Context;

@@ -17,6 +17,10 @@ import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestionDao;
 import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestionDao;
+import com.example.angeles.encuestasuandes.db.Premio.Price;
+import com.example.angeles.encuestasuandes.db.Premio.PriceDao;
+import com.example.angeles.encuestasuandes.db.Premio.UserPrice;
+import com.example.angeles.encuestasuandes.db.Premio.UserPriceDao;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.ProfileDao;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
@@ -28,11 +32,14 @@ import com.example.angeles.encuestasuandes.db.Usuario.UserDao;
  */
 
 
-@Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class}, version = 1)
+@Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class
+, Price.class, UserPrice.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract EncuestaDao encuestaDao();
     public abstract ProfileDao profileDao();
+    public abstract PriceDao priceDao();
+    public abstract UserPriceDao userPriceDao();
     public abstract OpenQuestionDao openQuestionDao();
     public abstract MultipleQuestionDao multipleQuestionDao();
     public abstract ChoiceQuestionDao choiceQuestionDao();

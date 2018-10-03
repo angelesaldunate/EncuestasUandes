@@ -1,0 +1,101 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.angeles.encuestasuandes.Classes.SorteoFragment">
+    <TextView
+        android:id="@+id/textView_title_sorteo"
+        android:layout_width="wrap_content"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_height="wrap_content"
+        android:text="Elige el premio para participar"
+        android:textColor="@android:color/black"
+        android:textSize="32sp"
+        android:textAlignment="center"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+
+        <ListView
+            android:id="@+id/list_allPremios"
+            android:layout_width="match_parent"
+            android:layout_height="256dp"
+            android:layout_margin="10dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingLeft="16dp">
+
+            <TextView
+                android:id="@+id/actualmente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Actualmente Elegiste:"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/nombre_premio"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingTop="32dp">
+
+            <TextView
+                android:id="@+id/Quedan"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Quedan "
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/dias"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="5"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+            <TextView
+                android:id="@+id/parasorteo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text=" días!!"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="30sp" />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

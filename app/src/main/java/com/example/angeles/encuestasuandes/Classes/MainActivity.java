@@ -1,4 +1,4 @@
-package com.example.angeles.encuestasuandes;
+package com.example.angeles.encuestasuandes.Classes;
 
 import android.arch.persistence.room.Room;
 import android.content.Context;
@@ -6,6 +6,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -17,14 +19,23 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
+import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import java.util.Calendar;
 
-public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.GregorianCalendar;
+
+
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iComunicator  {
     static private AppDatabase appDatabase;
     static private SharedPreferences sharedPreferences;
     static private CredentialManage credentialManager;
@@ -63,6 +74,36 @@ public class MainActivity extends AppCompatActivity
         } else {
             setCredentialsOnHeader(credentialManager.getEmail());
         }
+
+        // Creo encuestas
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                if (appDatabase.encuestaDao().getAllEncuesta().size() == 0) {
+                    Encuesta nueva_enc = new Encuesta();
+                    nueva_enc.setDescription("Esta descripcion trata de ...");
+                    nueva_enc.setEnd_date(dateToTimestamp());
+                    nueva_enc.setMax_responses(5);
+                    nueva_enc.setScore(5);
+                    nueva_enc.setName("Burguer");
+                    appDatabase.encuestaDao().insertAll(nueva_enc);
+                    Price new_price = new Price();
+                    new_price.setDescription("Holaaaa descripcion");
+                    new_price.setName("Blackberry");
+                    new_price.setEnd_date(dateToTimestamp());
+                    new_price.setIs_available(true);
+                    appDatabase.priceDao().insertAll(new_price);
+                    Price new_price2 = new Price();
+                    new_price2.setDescription("Holaaaa descripcion");
+                    new_price2.setName("Iphone");
+                    new_price2.setEnd_date(dateToTimestamp());
+                    new_price2.setIs_available(true);
+                    appDatabase.priceDao().insertAll(new_price2);
+                }
+            }
+        }).start();
+
+
     }
 
     @Override
@@ -100,12 +141,18 @@ public class MainActivity extends AppCompatActivity
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        // Handle navigation view item clicks here.
+        Fragment fragment;
+
         int id = item.getItemId();
 
         if (id == R.id.nav_encuesta) {
-            // Handle the camera action
+            fragment = new AllEncuestasFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
         } else if (id == R.id.nav_sorteo) {
+            fragment = new SorteoFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
 
         } else if (id == R.id.nav_perfil) {
 
@@ -166,8 +213,8 @@ public class MainActivity extends AppCompatActivity
         View headerView = (navigationView.getHeaderView(0));
         TextView textViewmail = headerView.findViewById(R.id.nav_email);
         textViewmail.setText(email);
-       // Fragment fragment = new SearchRouteFragment();
-       // getSupportFragmentManager().beginTransaction().replace(R.id.framenew, fragment).addToBackStack("null").commit();
+        Fragment fragment = new AllEncuestasFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
     }
     public void setNameOnHeader( String name){
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
@@ -175,5 +222,38 @@ public class MainActivity extends AppCompatActivity
         TextView textviewnombre = headerView.findViewById(R.id.nav_name);
         textviewnombre.setText(name);
     }
+
+    @Override
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
+
+    @Override
+    public CredentialManage getCredentialManage() {
+        return credentialManager;
+    }
+
+    @Override
+    public AppDatabase getDb() {
+        return appDatabase;
+    }
+
+    @Override
+    public String getDate(Long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time * 1000);
+        cal.add(Calendar.HOUR, -4);
+        String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
+        return date;
+    }
+    public String dateToTimestamp(){
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 23);// I might have the wrong Calendar constant...
+        cal.set(Calendar.MONTH, 8);// -1 as month is zero-based
+        cal.set(Calendar.YEAR, 2019);
+        Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
+        return tstamp.toString();
+    }
+
 
 }

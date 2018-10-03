@@ -1,4 +1,4 @@
-package com.example.angeles.encuestasuandes;
+package com.example.angeles.encuestasuandes.Classes;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,6 +32,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
