@@ -39,6 +39,8 @@ import com.example.angeles.encuestasuandes.db.Usuario.User;
 import java.util.ArrayList;
 import java.util.List;
 
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
@@ -82,7 +84,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
+        Button activateButton = (Button) findViewById(R.id.activate);
+        activateButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                activate_account();
+            }
+        });
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
@@ -297,11 +305,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
+    public void activate_account(){
+        Intent intent = new Intent(this, ActivationActivity.class);
+        startActivity(intent);
+    }
 
-    /**
-     * Represents an asynchronous login/registration task used to authenticate
-     * the user.
-     */
+
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
         private final String mEmail;

@@ -155,6 +155,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
         } else if (id == R.id.nav_perfil) {
+            fragment = new ProfileFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
 
         } else if (id == R.id.nav_logout) {
             logOut();
