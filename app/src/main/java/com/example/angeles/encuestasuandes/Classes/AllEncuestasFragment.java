@@ -17,8 +17,12 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.example.angeles.encuestasuandes.R;
+import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
+import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
+import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +72,72 @@ public class AllEncuestasFragment extends Fragment {
                         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                             @Override
                             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                final Encuesta encuesta_seleccionada = adapter.getItem(i);
+                                new Thread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        List<Integer> all_choice = appDatabase.choiceQuestionDao().getAllIdChoicebyEncuestaid(encuesta_seleccionada.getEnid());
+                                        ArrayList<Integer> all_index_choice = new ArrayList<>(all_choice);
+                                        List<Integer> all_multiple = appDatabase.multipleQuestionDao().getAllIdMChoicebyEncuestaid(encuesta_seleccionada.getEnid());
+                                        ArrayList<Integer> all_index_multiple = new ArrayList<>(all_multiple);
+                                        List<Integer> all_open = appDatabase.openQuestionDao().getAllIdOpenbyEncuestaid(encuesta_seleccionada.getEnid());
+                                        ArrayList<Integer> all_index_open = new ArrayList<>(all_open);
 
+                                        Log.d("OPEEEEEEEEEEEN", Integer.toString(all_index_open.size()));
+                                        Log.d("MULTIPLEEEEEEE", Integer.toString(all_index_multiple.size()));
+                                        Log.d("CHOICEEEEEEEE", Integer.toString(all_index_choice.size()));
+
+
+                                        Bundle bund = new Bundle();
+                                        Fragment fragment;
+                                        if (all_index_open.size()>0){
+
+                                          fragment = new OpenQFragment();
+                                            bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
+                                            int primer_index = all_index_open.get(0);
+                                            bund.putInt("id_actual", primer_index);
+                                            all_index_open.remove(0);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            fragment.setArguments(bund);
+                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
+                                        }else if(all_index_choice.size()>0){
+
+                                            fragment = new SimpleChQFragment();
+                                            bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
+                                            int primer_index = all_index_choice.get(0);
+                                            bund.putInt("id_actual", primer_index);
+                                            all_index_choice.remove(0);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            fragment.setArguments(bund);
+                                           getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
+
+                                        }
+                                        else if(all_index_multiple.size()>0){
+                                            fragment = new MultipleQFragment();
+                                            bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
+                                            int primer_index = all_index_multiple.get(0);
+                                            bund.putInt("id_actual", primer_index);
+                                            all_index_multiple.remove(0);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            fragment.setArguments(bund);
+                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
+
+                                        }
+
+
+
+
+                                    }
+                                }).start();
 
                             }
                         });

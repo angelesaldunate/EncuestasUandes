@@ -16,6 +16,11 @@ public interface OpenQuestionDao {
     List<OpenQuestion> getAllOpenQ();
     @Query("SELECT * FROM openquestion WHERE open_q_id=:op_id LIMIT 1")
     OpenQuestion getOneOpenQuestion(int op_id);
+    @Query("SELECT * FROM openquestion WHERE eId=:eId ")
+    List<OpenQuestion> getAllOpenbyEncuestaid(int eId);
+    @Query("SELECT open_q_id FROM openquestion WHERE eId=:eId ")
+    List<Integer> getAllIdOpenbyEncuestaid(int eId);
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(OpenQuestion... openQuestions);

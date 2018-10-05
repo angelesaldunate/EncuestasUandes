@@ -16,6 +16,11 @@ public interface MultipleQuestionDao {
     List<MultipleQuestion> getAllMultipleQ();
     @Query("SELECT * FROM multiplequestion WHERE multiple_q_id=:ml_id LIMIT 1")
     MultipleQuestion getOneMultipleQuestion(int ml_id);
+    @Query("SELECT * FROM multiplequestion WHERE eId=:eId ")
+    List<MultipleQuestion> getAllMultiplebyEncuestaid(int eId);
+    @Query("SELECT multiple_q_id FROM multiplequestion WHERE eId=:eId ")
+    List<Integer> getAllIdMChoicebyEncuestaid(int eId);
+
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(MultipleQuestion... multipleQuestions);

@@ -16,6 +16,8 @@ public interface EncuestaDao {
     List<Encuesta> getAllEncuesta();
     @Query("SELECT * FROM encuesta WHERE enid=:enId LIMIT 1")
     Encuesta getOneEncuesta(int enId);
+    @Query("SELECT * FROM encuesta WHERE name=:name LIMIT 1")
+    Encuesta getOneEncuestabyname(String name);
 
     @Insert
     void insertAll(Encuesta... encuestas);

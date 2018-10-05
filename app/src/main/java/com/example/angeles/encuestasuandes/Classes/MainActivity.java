@@ -8,6 +8,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -20,8 +21,11 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.example.angeles.encuestasuandes.R;
+import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoice;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
+import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
@@ -99,6 +103,22 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     new_price2.setEnd_date(dateToTimestamp());
                     new_price2.setIs_available(true);
                     appDatabase.priceDao().insertAll(new_price2);
+
+                    Encuesta oth = appDatabase.encuestaDao().getOneEncuestabyname("Burguer");
+                    Log.d("NOMBREEEEIDEE", oth.getName());
+
+                    MultipleQuestion mt = new MultipleQuestion();
+                    mt.setEId(oth.getEnid());
+                    appDatabase.multipleQuestionDao().insertAll(mt);
+                    MultipleQuestion mt1 = new MultipleQuestion();
+                    mt1.setEId(oth.getEnid());
+                    appDatabase.multipleQuestionDao().insertAll(mt1);
+                    ChoiceQuestion ch = new ChoiceQuestion();
+                    ch.setEId(oth.getEnid());
+                    appDatabase.choiceQuestionDao().insertAll(ch);
+
+
+
                 }
             }
         }).start();

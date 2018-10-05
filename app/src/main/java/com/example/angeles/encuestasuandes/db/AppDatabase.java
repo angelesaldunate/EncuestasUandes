@@ -11,6 +11,7 @@ import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoice;
 import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoiceDao;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Encuestas.EncuestaDao;
+import com.example.angeles.encuestasuandes.db.GrupoUsuario.Category;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestionDao;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
@@ -33,7 +34,7 @@ import com.example.angeles.encuestasuandes.db.Usuario.UserDao;
 
 
 @Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class
-, Price.class, UserPrice.class}, version = 1)
+, Price.class, UserPrice.class, Category.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract UserDao userDao();
     public abstract EncuestaDao encuestaDao();

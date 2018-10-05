@@ -8,7 +8,7 @@ import android.arch.persistence.room.PrimaryKey;
  * Created by Angeles on 10/2/2018.
  */
 @Entity
-public class Cartegory {
+public class Category {
     @PrimaryKey(autoGenerate = true)
     private int category_id;
 
