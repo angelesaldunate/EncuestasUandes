@@ -12,6 +12,8 @@ import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoiceDao;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Encuestas.EncuestaDao;
 import com.example.angeles.encuestasuandes.db.GrupoUsuario.Category;
+import com.example.angeles.encuestasuandes.db.GrupoUsuario.CategoryDao;
+import com.example.angeles.encuestasuandes.db.GrupoUsuario.Group;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestionDao;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
@@ -55,6 +57,7 @@ public abstract class AppDatabase extends RoomDatabase {
     public abstract CareerDao careerDao();
     public abstract SimpleAnswerDao simpleAnswerDao();
     public abstract MultipleAnswerDao multipleAnswerDao();
+    public abstract CategoryDao categoryDao();
 
 
 
