@@ -3,19 +3,33 @@ package com.example.angeles.encuestasuandes.Classes;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.Respuestas.MultipleAnswer;
+import com.example.angeles.encuestasuandes.db.Respuestas.SimpleAnswer;
+import com.example.angeles.encuestasuandes.db.Usuario.User;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 
 
 public class MultipleQFragment extends Fragment {
@@ -25,6 +39,7 @@ public class MultipleQFragment extends Fragment {
     ArrayList<Integer> cantidad_p_multiple;
     ArrayList<Integer> cantidad_p_abierta;
     ArrayList<Integer> cantidad_p_alternativa;
+    int id_actual;
     int encuesta_id;
 
 
@@ -50,26 +65,63 @@ public class MultipleQFragment extends Fragment {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
            encuesta_id = bundle.getInt("encuesta_id");
-            int id_actual = bundle.getInt("id_actual");
+           id_actual = bundle.getInt("id_actual");
             cantidad_p_multiple = bundle.getIntegerArrayList("cantidad_Pmultiple");
             cantidad_p_abierta = bundle.getIntegerArrayList("cantidad_Pabierta");
            cantidad_p_alternativa = bundle.getIntegerArrayList("cantidad_Palternativa");
         }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final List<Integer> indices = appDatabase.multipleChoiceDao().getAllIdMuChoicebyQuestion(id_actual);
+                final List<String> contents = appDatabase.multipleChoiceDao().getAllcontentMChoicebyQuestion(id_actual);
+                final String enunciado_str = appDatabase.multipleQuestionDao().getOneMultipleQuestion(id_actual).getEnunciado();
+                Handler mainHandler = new Handler(getActivity().getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView enunciado = (TextView) view.findViewById(R.id.enunciado_pregunta_m);
+                        enunciado.setText(enunciado_str);
+                        LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.linear_preguntas_m);
+                        for (int i = 0; i < indices.size(); i++){
+
+                            generateAlternative(indices.get(i),contents.get(i));
+
+                        }
+
+
+
+
+
+                    }});}}).start();
 
 
         Button button_ok = (Button) view.findViewById(R.id.button_ok_multiple);
         button_ok.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        final List<Integer> indices = appDatabase.multipleChoiceDao().getAllIdMuChoicebyQuestion(id_actual);
+                        User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
+                        ArrayList<Integer> ides_seleccionadas = new ArrayList<>();
+                        for (int i = 0; i < indices.size(); i++) {
+                            CheckBox cb = (CheckBox) view.findViewById(indices.get(i));
+                            if (cb.isSelected()){
+                                MultipleAnswer ma = new MultipleAnswer();
+                                ma.setMultipleChoiceId(i);
+                                ma.setUserId(current.getUid());
+                                appDatabase.multipleAnswerDao().insertAll(ma);
+                            }
 
-                if (cantidad_p_multiple.size()==0 && cantidad_p_abierta.size()==0 && cantidad_p_alternativa.size()==0){
-                    Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta",Toast.LENGTH_SHORT );
-                    toast.show();
-                    Fragment fr = new AllEncuestasFragment();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
-                }else{
+                        }
+                    }}).start();
+
+
                     GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id);
-                }
+
 
             }
         });
@@ -91,6 +143,16 @@ public class MultipleQFragment extends Fragment {
     }
 
     public void GetOtherQ(ArrayList<Integer> all_index_open,ArrayList<Integer> all_index_multiple,ArrayList<Integer> all_index_choice, int id_encuesta){
+
+
+
+
+        if (cantidad_p_multiple.size()==0 && cantidad_p_abierta.size()==0 && cantidad_p_alternativa.size()==0){
+            Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta",Toast.LENGTH_SHORT );
+            toast.show();
+            Fragment fr = new AllEncuestasFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
+        }else{
         Bundle bund = new Bundle();
         Fragment fragment;
         if (all_index_open.size()>0){
@@ -135,6 +197,46 @@ public class MultipleQFragment extends Fragment {
 
 
         }
+        }
+
+    }
+    public void generateAlternative(int index, String content){
+        LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.linear_preguntas_m);
+
+
+
+
+        CheckBox alternativa = new CheckBox(getContext());
+        int ide_question = index;
+        alternativa.setId(ide_question);
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        int px = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                5,
+                getResources().getDisplayMetrics()
+        );
+        layoutParams.setMargins(px,px,px,px);
+        int padding = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                20,
+                getResources().getDisplayMetrics()
+        );
+        int elevation = (int) TypedValue.applyDimension(
+                TypedValue.COMPLEX_UNIT_DIP,
+                4,
+                getResources().getDisplayMetrics()
+        );
+
+        alternativa.setLayoutParams(layoutParams);
+        alternativa.setBackgroundColor(getResources().getColor(R.color.colorwhite));
+        alternativa.setClickable(true);
+        alternativa.setElevation(elevation);
+        alternativa.setPadding(padding ,padding,padding,padding);
+        alternativa.setText(content);
+
+        linearLayout.addView(alternativa);
+
     }
 
 

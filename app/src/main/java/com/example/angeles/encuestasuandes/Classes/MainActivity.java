@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.ThemedSpinnerAdapter;
 
 import com.example.angeles.encuestasuandes.R;
+import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoice;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
@@ -112,10 +113,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
                     MultipleQuestion mt = new MultipleQuestion();
                     mt.setEId(oth.getEnid());
+                    mt.setEnunciado("Enunciadomultiple1");
                     appDatabase.multipleQuestionDao().insertAll(mt);
                     MultipleQuestion mt1 = new MultipleQuestion();
+                    mt1.setEnunciado("Enunciado Multiple 2");
                     mt1.setEId(oth.getEnid());
                     appDatabase.multipleQuestionDao().insertAll(mt1);
+                    List<Integer> ch3 = appDatabase.multipleQuestionDao().getAllIdMChoicebyEncuestaid(oth.getEnid());
+                    MultipleChoice mc = new MultipleChoice();
+                    mc.setMultipleQId(ch3.get(0));
+                    mc.setContent("M!111111");
+                    appDatabase.multipleChoiceDao().insertAll(mc,mc);
+                    MultipleChoice mc2 = new MultipleChoice();
+                    mc2.setMultipleQId(ch3.get(1));
+                    mc2.setContent("M!2222");
+
+                    appDatabase.multipleChoiceDao().insertAll(mc2,mc2);
+
                     ChoiceQuestion ch = new ChoiceQuestion();
                     ch.setEId(oth.getEnid());
                     ch.setEnunciado("Este es el enunciadoo");
@@ -132,6 +146,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Career cr = new Career();
                     cr.setName("ING");
                     appDatabase.careerDao().insertAll(cr);
+
+
+
 
 
 

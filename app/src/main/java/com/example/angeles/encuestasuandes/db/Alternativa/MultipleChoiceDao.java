@@ -26,4 +26,9 @@ public interface MultipleChoiceDao {
 
     @Query("DELETE FROM MultipleChoice")
     void deleteAll();
+    @Query("SELECT multiple_choice_id FROM multiplechoice WHERE multipleQId=:multipleqId ")
+    List<Integer> getAllIdMuChoicebyQuestion(int multipleqId);
+    @Query("SELECT content FROM multiplechoice WHERE multipleQId=:choiceqId ")
+    List<String> getAllcontentMChoicebyQuestion(int choiceqId);
+
 }

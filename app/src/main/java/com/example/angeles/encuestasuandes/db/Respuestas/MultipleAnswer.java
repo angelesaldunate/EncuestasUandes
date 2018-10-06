@@ -5,6 +5,7 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
+import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
@@ -17,7 +18,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         (foreignKeys = {@ForeignKey(entity = User.class,
                 parentColumns = "uid",
                 childColumns = "userId",
-                onDelete = CASCADE), @ForeignKey(entity = OpenQuestion.class,
+                onDelete = CASCADE), @ForeignKey(entity = MultipleChoice.class,
                 parentColumns = "multiple_choice_id",
                 childColumns = "multipleChoiceId",
                 onDelete = CASCADE)})
