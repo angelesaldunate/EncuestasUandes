@@ -3,17 +3,24 @@ package com.example.angeles.encuestasuandes.Classes;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
+import com.example.angeles.encuestasuandes.db.Respuestas.OpenAnswer;
+import com.example.angeles.encuestasuandes.db.Usuario.User;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class OpenQFragment extends Fragment {
     private static AppDatabase appDatabase;
@@ -23,6 +30,7 @@ public class OpenQFragment extends Fragment {
     ArrayList<Integer> cantidad_p_abierta;
     ArrayList<Integer> cantidad_p_alternativa;
     int encuesta_id;
+    int id_actual;
 
 
 
@@ -45,15 +53,29 @@ public class OpenQFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_open_q, container, false);
     }
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(final View view, Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
         if (bundle != null) {
             encuesta_id = bundle.getInt("encuesta_id");
-            int id_actual = bundle.getInt("id_actual");
+            id_actual = bundle.getInt("id_actual");
             cantidad_p_multiple = bundle.getIntegerArrayList("cantidad_Pmultiple");
             cantidad_p_abierta = bundle.getIntegerArrayList("cantidad_Pabierta");
             cantidad_p_alternativa = bundle.getIntegerArrayList("cantidad_Palternativa");
         }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final String enunciado_str = appDatabase.openQuestionDao().getOneOpenQuestion(id_actual).getEnunciado();
+                Handler mainHandler = new Handler(getActivity().getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        TextView enunciado = (TextView) view.findViewById(R.id.enunciado_pregunta_o);
+                        enunciado.setText(enunciado_str);
+
+
+
+                    }});}}).start();
 
 
         Button button_ok = (Button) view.findViewById(R.id.button_ok_open);
@@ -61,14 +83,10 @@ public class OpenQFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                if (cantidad_p_multiple.size()==0 && cantidad_p_abierta.size()==0 && cantidad_p_alternativa.size()==0){
-                    Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta",Toast.LENGTH_SHORT );
-                    toast.show();
-                    Fragment fr = new AllEncuestasFragment();
-                    getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
-                }else{
-                    GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id);
-                }
+                    EditText respuesta = (EditText) view.findViewById(R.id.open_answer);
+                    String texto = respuesta.getText().toString();
+                    GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id,texto);
+
 
             }
         });
@@ -88,7 +106,26 @@ public class OpenQFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    public void GetOtherQ(ArrayList<Integer> all_index_open,ArrayList<Integer> all_index_multiple,ArrayList<Integer> all_index_choice, int id_encuesta){
+    public void GetOtherQ(ArrayList<Integer> all_index_open, ArrayList<Integer> all_index_multiple, ArrayList<Integer> all_index_choice, int id_encuesta, final String respuesta){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
+                OpenAnswer oa = new OpenAnswer();
+                oa.setUserId(current.getUid());
+                oa.setOpenQId(id_actual);
+                oa.setAnswer(respuesta);
+                appDatabase.openAnswerDao().insertAll(oa);
+            }
+        }).start();
+
+
+        if (cantidad_p_multiple.size()==0 && cantidad_p_abierta.size()==0 && cantidad_p_alternativa.size()==0){
+            Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta",Toast.LENGTH_SHORT );
+            toast.show();
+            Fragment fr = new AllEncuestasFragment();
+            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
+        }else{
         Bundle bund = new Bundle();
         Fragment fragment;
         if (all_index_open.size()>0){
@@ -132,6 +169,7 @@ public class OpenQFragment extends Fragment {
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
+        }
         }
     }
 }

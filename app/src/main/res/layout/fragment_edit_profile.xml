@@ -179,6 +179,7 @@
                     android:clickable="true"
                     android:elevation="4dp"
                     android:padding="20dp"
+                    android:inputType="date"
                     android:hint="DD/MM/AAAA" />
 
 

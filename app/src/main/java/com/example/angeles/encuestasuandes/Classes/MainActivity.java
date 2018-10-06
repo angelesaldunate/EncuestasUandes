@@ -28,6 +28,7 @@ import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
+import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
@@ -146,6 +147,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     Career cr = new Career();
                     cr.setName("ING");
                     appDatabase.careerDao().insertAll(cr);
+
+                    OpenQuestion oq = new OpenQuestion();
+                    oq.setEId(oth.getEnid());
+                    oq.setEnunciado("Cuentame como te sientes");
+                    appDatabase.openQuestionDao().insertAll(oq);
 
 
 
