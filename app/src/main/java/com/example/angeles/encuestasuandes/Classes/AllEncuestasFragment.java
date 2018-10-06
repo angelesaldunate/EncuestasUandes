@@ -83,10 +83,6 @@ public class AllEncuestasFragment extends Fragment {
                                         List<Integer> all_open = appDatabase.openQuestionDao().getAllIdOpenbyEncuestaid(encuesta_seleccionada.getEnid());
                                         ArrayList<Integer> all_index_open = new ArrayList<>(all_open);
 
-                                        Log.d("OPEEEEEEEEEEEN", Integer.toString(all_index_open.size()));
-                                        Log.d("MULTIPLEEEEEEE", Integer.toString(all_index_multiple.size()));
-                                        Log.d("CHOICEEEEEEEE", Integer.toString(all_index_choice.size()));
-
 
                                         Bundle bund = new Bundle();
                                         Fragment fragment;

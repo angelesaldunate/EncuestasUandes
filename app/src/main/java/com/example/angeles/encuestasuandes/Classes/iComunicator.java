@@ -13,5 +13,7 @@ public interface iComunicator {
     public CredentialManage getCredentialManage();
     public AppDatabase getDb();
     public String getDate(Long time);
+    public void insertProfile(String name, String lastLame, String gender, String birthdate, String rut, int userid);
+
 
 }

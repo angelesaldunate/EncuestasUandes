@@ -4,16 +4,88 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.angeles.encuestasuandes.Classes.SimpleChQFragment">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Simple" />
-    <Button
-        android:id="@+id/button_ok_simple"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/header_cover_image"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back1" />
+
+            <ImageButton
+                android:id="@+id/foto_pregunta"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/header_cover_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-60dp"
+                android:background="@drawable/back2"
+                android:elevation="5dp"
+                android:padding="20dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/panda1" />
+
+            <RelativeLayout
+                android:id="@+id/alternativas_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/header_cover_image"
+                android:background="@color/colorligthBlue"
+                android:elevation="4dp"
+                android:paddingBottom="5dp">
+
+
+
+
+
+                <TextView
+                    android:id="@+id/enunciado_pregunta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="Enunciado Pregunta"
+                    android:textAlignment="center"
+                    android:textColor="#fff"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_preguntas"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/alternativas_layout"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/slecciona_una"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="Selecciona una alternativa"
+                    android:textAlignment="center"
+                    android:textColor="#515151"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+
+            </LinearLayout>
+        </RelativeLayout>
+    </ScrollView>
+
 
 </LinearLayout>

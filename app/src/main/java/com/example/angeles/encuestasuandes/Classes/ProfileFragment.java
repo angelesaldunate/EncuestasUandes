@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
@@ -50,6 +51,8 @@ public class ProfileFragment extends Fragment {
         final TextView rut = (TextView) view.findViewById(R.id.rut_ingresado);
         final TextView genero = (TextView) view.findViewById(R.id.genero_ingresado);
         final TextView fecha = (TextView) view.findViewById(R.id.fecha_nacimiento_ingresada);
+        final TextView carrera = (TextView) view.findViewById(R.id.career_ingresado);
+
         Button editar = (Button) view.findViewById(R.id.edit_profile);
 
         new Thread(new Runnable() {
@@ -58,7 +61,9 @@ public class ProfileFragment extends Fragment {
                 final User current_user = appDatabase.userDao().getOneUser(credentialManager.getEmail());
                 final Profile current_profile = appDatabase.profileDao().getOneProfile(current_user.getUid());
                 if (current_profile!= null){
-                Handler mainHandler = new Handler(getActivity().getMainLooper());
+                    final Career current_career = appDatabase.careerDao().getOneCareer(current_profile.getCareer_id());
+
+                    Handler mainHandler = new Handler(getActivity().getMainLooper());
                 mainHandler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -68,6 +73,7 @@ public class ProfileFragment extends Fragment {
                         rut.setText(current_profile.getRut());
                         genero.setText(current_profile.getGender());
                         fecha.setText(current_profile.getBirthdate());
+                        carrera.setText(current_career.getName());
 
                             }
                         });

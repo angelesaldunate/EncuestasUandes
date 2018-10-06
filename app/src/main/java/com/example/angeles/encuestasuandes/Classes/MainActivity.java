@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.ThemedSpinnerAdapter;
 
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoice;
@@ -27,6 +28,7 @@ import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
+import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
@@ -37,6 +39,7 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iComunicator  {
@@ -115,7 +118,20 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     appDatabase.multipleQuestionDao().insertAll(mt1);
                     ChoiceQuestion ch = new ChoiceQuestion();
                     ch.setEId(oth.getEnid());
+                    ch.setEnunciado("Este es el enunciadoo");
                     appDatabase.choiceQuestionDao().insertAll(ch);
+                    List<Integer> ch2 = appDatabase.choiceQuestionDao().getAllIdChoicebyEncuestaid(oth.getEnid());
+                    SimpleChoice sm = new SimpleChoice();
+                    sm.setChoiceQId(ch2.get(0));
+                    sm.setContent("HOlaaaaaaaaaa");
+                    appDatabase.simpleChoiceDao().insertAll(sm);
+                    SimpleChoice sm2 = new SimpleChoice();
+                    sm2.setChoiceQId(ch2.get(0));
+                    sm2.setContent("Chaooo");
+                    appDatabase.simpleChoiceDao().insertAll(sm2);
+                    Career cr = new Career();
+                    cr.setName("ING");
+                    appDatabase.careerDao().insertAll(cr);
 
 
 
@@ -276,6 +292,27 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         cal.set(Calendar.YEAR, 2019);
         Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
         return tstamp.toString();
+    }
+    public void insertProfile(final String name, final String lastLame, final String gender, final String birthdate, final String rut, final int userid){
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Profile perfiln =  new Profile();
+                perfiln.setName(name);
+                perfiln.setLast_name(lastLame);
+                perfiln.setGender(gender);
+                perfiln.setBirthdate(birthdate);
+                perfiln.setRut(rut);
+                perfiln.setUserId(userid);
+                appDatabase.profileDao().insertAll(perfiln);
+
+            }
+        }).start();
+
+
+
     }
 
 

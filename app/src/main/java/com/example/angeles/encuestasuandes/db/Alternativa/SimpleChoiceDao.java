@@ -21,6 +21,12 @@ public interface SimpleChoiceDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(SimpleChoice... simpleChoices);
+    @Query("SELECT simple_choice_id FROM simplechoice WHERE choiceQId=:choiceqId ")
+    List<Integer> getAllIdChoicebyQuestion(int choiceqId);
+    @Query("SELECT content FROM simplechoice WHERE choiceQId=:choiceqId ")
+    List<String> getAllcontentChoicebyQuestion(int choiceqId);
+
+
 
 
     @Query("DELETE FROM SimpleChoice")

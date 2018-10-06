@@ -15,7 +15,7 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 parentColumns = "category_id",
                 childColumns = "categoryId",
                 onDelete = CASCADE)})
-public class Grupo {
+public class Group {
 
     @PrimaryKey(autoGenerate = true)
     private int group_id;

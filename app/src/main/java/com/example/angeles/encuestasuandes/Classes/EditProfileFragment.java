@@ -136,6 +136,7 @@ public class EditProfileFragment extends Fragment {
                             }else{
                                 perfiln.setGender("Masculino");
                             }
+                            perfiln.setCareer_id(appDatabase.careerDao().getOneCareerbyName("ING").getCareer_id());
 
                             perfiln.setUserId(current.getUid());
                             perfiln.setRut(rut.getText().toString());
