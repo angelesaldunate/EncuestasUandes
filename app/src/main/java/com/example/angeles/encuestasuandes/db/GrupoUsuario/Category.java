@@ -15,6 +15,14 @@ public class Category {
     @ColumnInfo(name= "name")
     private String name;
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
     @ColumnInfo(name= "selected")
     private boolean selected;
 

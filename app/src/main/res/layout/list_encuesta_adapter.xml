@@ -27,7 +27,7 @@
                     android:id="@+id/driverTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="USER NAME"
+                    android:text="NAME"
                     android:textColor="@android:color/white"
                     android:textSize="24sp"
                     android:textStyle="bold" />
@@ -38,12 +38,7 @@
                     android:layout_margin="8dp"
                     android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/originTextView"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="PLACE A"
-                        android:textColor="@android:color/white" />
+
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -52,13 +47,15 @@
                             android:id="@+id/destinationTextView"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="PLACE B"
+                            android:text="Score"
+                            android:textSize="20dp"
                             android:textColor="@android:color/white" />
                         <ImageView
                             android:id="@+id/directionIcon"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
-                            android:src="@drawable/ic_medal" />
+                            android:src="@drawable/ic_medal"
+                            />
 
                     </LinearLayout>
 
@@ -71,24 +68,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
+                android:layout_marginLeft="20dp"
                 android:textAlignment="center">
-
                 <TextView
-                    android:id="@+id/timerTextView"
+                    android:id="@+id/originTextView"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_height="wrap_content"
+                    android:text="Description"
+                    android:textColor="@android:color/white" />
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:textColor="@android:color/white"
-                    android:textSize="32sp" />
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="20dp"
 
-                <TextView
-                    android:id="@+id/spotsTextView"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textAlignment="center"
-                    android:text="Días"
-                    android:textColor="@android:color/white"
-                    android:textSize="14sp" />
+                   >
+                    <TextView
+                        android:id="@+id/timerTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="NN"
+                        android:textColor="@android:color/white"
+                        android:textSize="24sp" />
+
+                    <TextView
+                        android:id="@+id/spotsTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textAlignment="center"
+                        android:text="dias"
+                        android:textColor="@android:color/white"
+                        android:textSize="14sp" />
+
+
+                </LinearLayout>
+
             </LinearLayout>
 
         </LinearLayout>

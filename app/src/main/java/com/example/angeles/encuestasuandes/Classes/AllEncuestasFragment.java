@@ -33,6 +33,7 @@ public class AllEncuestasFragment extends Fragment {
     private static AppDatabase appDatabase;
     private List<Encuesta> all;
     private iComunicator mListener;
+    String tipo;
     private CredentialManage credentialManager;
     private List<Encuesta> filtered_encuestas;
 
@@ -53,13 +54,29 @@ public class AllEncuestasFragment extends Fragment {
 
         final View final_view = view;
         final ListView lv = (ListView) view.findViewById(R.id.list_allEncuestas);
+        final Bundle filtro = this.getArguments();
+        if (filtro != null) {
+            tipo = filtro.getString("filtro");
+        }
 
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 SystemClock.sleep(1000);
-                all = appDatabase.encuestaDao().getAllEncuesta();
+                if (tipo!= null){
+                    if(tipo == "Puntaje"){
+                        all = appDatabase.encuestaDao().getAllEncuesta();
+
+                    }else{
+                        all = appDatabase.encuestaDao().getAllEncuestabyfilter();
+
+                    }
+
+                }else{
+                    all = appDatabase.encuestaDao().getAllEncuesta();
+
+                }
 
 
                 Handler mainHandler = new Handler(getActivity().getMainLooper());
@@ -138,11 +155,27 @@ public class AllEncuestasFragment extends Fragment {
                             }
                         });
 
+
+
                     }
                 });
 
             }
         }) .start();
+        Button apply = (Button) view.findViewById(R.id.button_apply);
+        apply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Spinner spinner = (Spinner) final_view.findViewById(R.id.spinner_sectors_search);
+                Bundle bund  = new Bundle();
+                String text = spinner.getSelectedItem().toString();
+                bund.putString("filtro",text);
+                AllEncuestasFragment fragment = new AllEncuestasFragment();
+                fragment.setArguments(bund);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew,fragment).addToBackStack("null").commit();
+
+
+            }});
 
 
     }

@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -218,7 +219,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
-        } else if (id == R.id.nav_logout) {
+        }else if (id == R.id.nav_settings){
+            fragment = new PreferencesFragment();
+            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
+        }
+        else if (id == R.id.nav_logout) {
             logOut();
 
         }
@@ -316,25 +322,18 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
         return tstamp.toString();
     }
-    public void insertProfile(final String name, final String lastLame, final String gender, final String birthdate, final String rut, final int userid){
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                Profile perfiln =  new Profile();
-                perfiln.setName(name);
-                perfiln.setLast_name(lastLame);
-                perfiln.setGender(gender);
-                perfiln.setBirthdate(birthdate);
-                perfiln.setRut(rut);
-                perfiln.setUserId(userid);
-                appDatabase.profileDao().insertAll(perfiln);
-
-            }
-        }).start();
+    public void updateProfile(final Profile perfiln){
 
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        appDatabase.profileDao().update(perfiln);
+
+                    }
+                }).start();
+                setNameOnHeader(perfiln.getName());
 
     }
 

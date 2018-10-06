@@ -116,7 +116,7 @@ public class EditProfileFragment extends Fragment {
                             }
 
 
-                            appDatabase.profileDao().update(perfil);
+                            mListener.updateProfile(perfil);
                         }else{
                             Profile perfiln =  new Profile();
                             String[] parts = name.getText().toString().split(" ");

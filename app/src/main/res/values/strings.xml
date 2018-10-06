@@ -27,6 +27,7 @@
     <string name="hola">Hola</string>
     <string name="veinte">20dp</string>
     <string-array name="Sectors">
-        <item>filtrooooo</item>
+        <item>Puntaje</item>
+        <item>Nombre</item>
     </string-array>
 </resources>

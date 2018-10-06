@@ -12,8 +12,10 @@ import java.util.List;
  */
 @Dao
 public interface EncuestaDao {
-    @Query("SELECT * FROM encuesta")
+    @Query("SELECT * FROM encuesta ORDER BY score DESC")
     List<Encuesta> getAllEncuesta();
+    @Query("SELECT * FROM encuesta ORDER BY name DESC")
+    List<Encuesta> getAllEncuestabyfilter();
     @Query("SELECT * FROM encuesta WHERE enid=:enId LIMIT 1")
     Encuesta getOneEncuesta(int enId);
     @Query("SELECT * FROM encuesta WHERE name=:name LIMIT 1")
