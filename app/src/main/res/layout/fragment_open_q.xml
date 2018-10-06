@@ -5,15 +5,112 @@
     android:orientation="vertical"
     tools:context="com.example.angeles.encuestasuandes.Classes.OpenQFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Opeeen" />
-    <Button
-        android:id="@+id/button_ok_open"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Button" />
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/header_cover_image"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/back1" />
+
+            <ImageButton
+                android:id="@+id/foto_pregunta_o"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/header_cover_image"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="-50dp"
+                android:background="@drawable/question"
+                android:elevation="5dp"
+                android:padding="20dp"
+
+                android:scaleType="centerCrop"
+                />
+
+            <RelativeLayout
+                android:id="@+id/alternativas_layout_o"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/header_cover_image"
+                android:background="@color/colorligthBlue"
+                android:elevation="4dp"
+                android:paddingBottom="5dp">
+
+
+
+
+
+                <TextView
+                    android:id="@+id/enunciado_pregunta_o"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="Enunciado Pregunta"
+                    android:textAlignment="center"
+                    android:textColor="#fff"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+
+            </RelativeLayout>
+
+
+            <LinearLayout
+                android:id="@+id/linear_preguntas_o"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/alternativas_layout_o"
+                android:layout_marginTop="5dp"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/escribe_respuesta_o"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="20dp"
+                    android:text="Escribe tu respuesta"
+                    android:textAlignment="center"
+                    android:textColor="#515151"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+                <EditText
+                    android:id="@+id/open_answer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="5dp"
+                    android:background="#fff"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:padding="20dp"
+                    android:inputType="textMultiLine"
+                    android:hint="Tu respuesta..." />
+
+
+
+            </LinearLayout>
+            <Button
+                android:id="@+id/button_ok_open"
+                style="?android:textAppearanceSmall"
+                android:layout_below="@+id/linear_preguntas_o"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Aceptar"
+                android:textStyle="bold"
+                android:background="@drawable/roundedbutton"
+                android:textColor="#2faee1"/>
+        </RelativeLayout>
+
+
+    </ScrollView>
 
 </LinearLayout>
