@@ -1,0 +1,58 @@
+networkManager.getBill(new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray data = response.optJSONArray("0");
+                    for (int i = 0; i < data.length(); i++){
+                        int id = data.getJSONObject(i).optInt("id");
+                        String name = data.getJSONObject(i).optString("name");
+                        int price = data.getJSONObject(i).optInt("price");
+                        String detail = data.getJSONObject(i).optString("detail");
+                        URL url;
+                        try {
+                            url = new URL(new URL("http://192.168.0.17:3000/"), data.getJSONObject(i).optString("img_url"));
+                            Product product = new Product(id, price, name, detail, url);
+                            allProduct.add(product);
+                            System.out.println("Added");
+                        }catch (MalformedURLException e){
+
+                        }
+                    }
+
+
+                } catch (JSONException e) {
+
+                }
+                progress.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }, deskId);
+}
+
+public void updateBill(final ArrayList<Product> products, int desk, final boolean justCall) throws JSONException {
+        networkManager.updateBill(new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                if (!justCall) {
+                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(intent);
+                }
+                else{
+                    Intent intent = new Intent(getApplicationContext(), SplitBillActivity.class);
+                    intent.putExtra("Desk", Desk_id);
+                    startActivity(intent);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        }, products, desk);
+    }
+}

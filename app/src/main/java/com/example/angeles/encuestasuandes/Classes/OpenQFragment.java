@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,9 +84,22 @@ public class OpenQFragment extends Fragment {
             @Override
             public void onClick(View v) {
 
-                    EditText respuesta = (EditText) view.findViewById(R.id.open_answer);
+                final EditText respuesta = (EditText) view.findViewById(R.id.open_answer);
+
+                if (TextUtils.isEmpty(respuesta.getText())) {
+                    Handler mainHandler = new Handler(getActivity().getMainLooper());
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            respuesta.setError(getString(R.string.error_field_required));
+                            respuesta.requestFocus();
+                        }
+                    });
+                } else{
+
                     String texto = respuesta.getText().toString();
                     GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id,texto);
+                }
 
 
             }

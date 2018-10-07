@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -106,21 +108,47 @@ public class MultipleQFragment extends Fragment {
                     public void run() {
                         final List<Integer> indices = appDatabase.multipleChoiceDao().getAllIdMuChoicebyQuestion(id_actual);
                         User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
-                        ArrayList<Integer> ides_seleccionadas = new ArrayList<>();
+                        int count = 0;
                         for (int i = 0; i < indices.size(); i++) {
                             CheckBox cb = (CheckBox) view.findViewById(indices.get(i));
-                            if (cb.isSelected()){
+                            if (cb.isChecked()){
+                                count+=1;
                                 MultipleAnswer ma = new MultipleAnswer();
-                                ma.setMultipleChoiceId(i);
+                                ma.setMultipleChoiceId(indices.get(i));
                                 ma.setUserId(current.getUid());
                                 appDatabase.multipleAnswerDao().insertAll(ma);
                             }
 
                         }
+                        final int  qt = count;
+                            Handler mainHandler = new Handler(getActivity().getMainLooper());
+                            mainHandler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    if (qt == 0){
+                                    CheckBox cb = (CheckBox) view.findViewById(indices.get(0));
+                                    cb.setError("Necesitas seleccionar al menos uno");
+                                    cb.requestFocus();
+                                    }else{
+                                        GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id);
+
+                                    }
+                                }
+                            });
+
+
+
+
+
+
+
+
                     }}).start();
 
 
-                    GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id);
+
+
+
 
 
             }
