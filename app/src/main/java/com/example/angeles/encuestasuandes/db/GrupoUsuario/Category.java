@@ -9,11 +9,18 @@ import android.arch.persistence.room.PrimaryKey;
  */
 @Entity
 public class Category {
-    @PrimaryKey(autoGenerate = true)
-    private int category_id;
+    @PrimaryKey
+    @ColumnInfo(name= "id")
+    private int id;
 
     @ColumnInfo(name= "name")
     private String name;
+
+    public Category(int id, String name, boolean selected) {
+        this.id = id;
+        this.name = name;
+        this.selected = selected;
+    }
 
     public boolean isSelected() {
         return selected;
@@ -26,12 +33,12 @@ public class Category {
     @ColumnInfo(name= "selected")
     private boolean selected;
 
-    public int getCategory_id() {
-        return category_id;
+    public int getId() {
+        return id;
     }
 
-    public void setCategory_id(int category_id) {
-        this.category_id = category_id;
+    public void setId(int category_id) {
+        this.id = category_id;
     }
 
     public String getName() {

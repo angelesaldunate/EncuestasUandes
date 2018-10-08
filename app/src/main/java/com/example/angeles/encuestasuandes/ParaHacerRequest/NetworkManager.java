@@ -13,6 +13,7 @@ package com.example.angeles.encuestasuandes.ParaHacerRequest;
         import com.android.volley.toolbox.HttpHeaderParser;
         import com.android.volley.toolbox.JsonObjectRequest;
         import com.android.volley.toolbox.Volley;
+        import com.example.angeles.encuestasuandes.Classes.CredentialManage;
         import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 
         import org.json.JSONArray;
@@ -24,15 +25,21 @@ package com.example.angeles.encuestasuandes.ParaHacerRequest;
         import java.util.HashMap;
         import java.util.List;
         import java.util.Map;
+        import java.util.concurrent.Executor;
 
-public class NetworkManager {
+public class NetworkManager implements Executor {
+    public void execute(Runnable r ){
+        Thread t = new Thread(r);
+        t.start();
 
+    }
     private static NetworkManager mInstance;
     private RequestQueue mRequestQueue;
     private static Context mCtx;
 
 
-    public static final String BASE_URL = "http://ec2-18-188-109-236.us-east-2.compute.amazonaws.com/";
+
+    public static final String BASE_URL = "http://192.168.0.103:3000/";
 
     private static String token =  "";
 
@@ -44,6 +51,8 @@ public class NetworkManager {
     public static synchronized NetworkManager getInstance(Context context) {
         if (mInstance == null) {
             mInstance = new NetworkManager(context);
+            CredentialManage credentialManage = CredentialManage.getInstance(context);
+            token = credentialManage.getAuthToken();
         }
         return mInstance;
     }
@@ -61,22 +70,27 @@ public class NetworkManager {
         System.out.print(this.token);
     }
 
-    public void login(final Response.Listener<JSONObject> responseListener,
+    public void login(String email, String password,final Response.Listener<JSONObject> responseListener,
                       Response.ErrorListener errorListener) throws JSONException {
 
-        String url = BASE_URL + "authenticate";
+        String url = BASE_URL + "/users/sign_in.json";
 
         JSONObject payload = new JSONObject();
-        payload.put("email", "user");
-        payload.put("password", "123123");
-        payload.put("token", token);
+        payload.put("email", email);
+        payload.put("password", password);
+
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        token = response.optString("Authenticate");
+                        token = response.optString("Authorization");
+                        if (token!=null){
+                            CredentialManage credentialManage = CredentialManage.getInstance(mCtx);
+                            credentialManage.guardarCredenciales(email,password,token);
+                        }
+
                         responseListener.onResponse(response);
                     }
                 }, errorListener){
@@ -132,6 +146,36 @@ public class NetworkManager {
         String url = BASE_URL + "products";
         makeApiCall(Request.Method.GET, url, null,listener, errorListener);
     }
+
+    public void updateInterestedCategories(Response.Listener<JSONObject> listener,
+                            Response.ErrorListener errorListener, JSONObject payload){
+
+        String url = BASE_URL + "interest_categories/edit";
+        makeApiCall(Request.Method.POST, url, payload,listener, errorListener);
+    }
+
+
+
+    public void activateEmail(Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener, String email){
+        JSONObject payload = new JSONObject();
+        try{
+        payload.put("email",email);}
+
+        catch(JSONException e){
+
+            e.printStackTrace();
+        }
+        String url = BASE_URL + "users/confirmations";
+        makeApiCall(Request.Method.POST, url, payload,listener, errorListener);
+    }
+
+    public void getCategories(Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener){
+
+        String url = BASE_URL + "/interest_categories";
+        makeApiCall(Request.Method.GET, url, null,listener, errorListener);
+    }
     public void createBill(Response.Listener<JSONObject> listener,
                            Response.ErrorListener errorListener, ArrayList<Profile> products, int desk) throws JSONException {
         JSONObject payload = new JSONObject();
@@ -181,7 +225,7 @@ public class NetworkManager {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String> headers = new HashMap<String, String>();
-                headers.put("Authorization", token);
+                headers.put("Authorization", "Bearer " +token);
                 return headers;
             }
         };

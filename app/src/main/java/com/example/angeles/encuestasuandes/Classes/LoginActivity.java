@@ -32,10 +32,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +51,6 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    private UserLoginTask mAuthTask = null;
 
     // UI references.
     private AutoCompleteTextView mEmailView;
@@ -53,7 +59,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mLoginFormView;
     static private AppDatabase appDatabase;
     private static final String DATABASE_NAME = "encuestas_db";
-
+    NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +70,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         appDatabase = Room.databaseBuilder(this,AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorligthBlue)));
 
-
+        networkManager = NetworkManager.getInstance(getApplicationContext());
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -96,10 +102,50 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
 
+
+
+        String email = mEmailView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        showProgress(true);
+
+        try{
+        networkManager.login(email,password, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                int status = response.optInt("status");
+                showProgress(false);
+                if(status== HttpURLConnection.HTTP_OK){
+                    Toast.makeText(getApplicationContext(),"Login Correct",Toast.LENGTH_LONG).show();
+                    Intent resultIntent = new Intent();
+                    resultIntent.putExtra("email_devuelto",email);
+                    resultIntent.putExtra("password_devuelto",password);
+                    setResult(MainActivity.RESULT_OK, resultIntent);
+                    finish();
+                    //
+                }
+                else{
+
+                    Toast.makeText(getApplicationContext(),"Credenciales invalidas",Toast.LENGTH_LONG).show();
+
+
+
+                    //
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                Toast.makeText(getApplicationContext(),"Error de conexion",Toast.LENGTH_SHORT);
+            }
+        });}
+        catch (JSONException e){
+
+            e.printStackTrace();
+        }
 
 
         new Thread(new Runnable() {
@@ -185,8 +231,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             // Show a progress spinner, and kick off a background task to
                             // perform the user login attempt.
                             showProgress(true);
-                            mAuthTask = new UserLoginTask(email, password);
-                            mAuthTask.execute((Void) null);
                             Context context = getApplicationContext();
                             CharSequence text = "Credenciales Validas";
                             int duration = Toast.LENGTH_SHORT;
@@ -202,7 +246,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     });
                 }
             }
-        }).start();
+        });
 
     }
 
@@ -340,7 +384,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
+            //mAuthTask = null;
             showProgress(false);
 
             if (success) {
@@ -353,7 +397,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         @Override
         protected void onCancelled() {
-            mAuthTask = null;
+            //mAuthTask = null;
             showProgress(false);
         }
     }

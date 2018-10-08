@@ -242,7 +242,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 final String email = data.getStringExtra("email_devuelto");
                 final String password = data.getStringExtra("password_devuelto");
 
-                credentialManager.guardarCredenciales(email, password);
+             //   credentialManager.guardarCredenciales(email, password);
 
 
                 new Thread(new Runnable() {
