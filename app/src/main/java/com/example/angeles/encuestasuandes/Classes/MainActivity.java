@@ -298,6 +298,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             int aux = current.getUid();
                             Profile actual_profile = appDatabase.profileDao().getOneProfile(aux);
                             setNameOnHeader(actual_profile.getName());
+
                         }
 
 
@@ -333,6 +334,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = (navigationView.getHeaderView(0));
         TextView textviewnombre = headerView.findViewById(R.id.nav_name);
         textviewnombre.setText(name);
+    }
+    public void setScoreOnHeader(int score){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textviewnombre = findViewById(R.id.na);
+        textviewnombre.setText(name);
+
     }
 
     @Override
