@@ -17,9 +17,6 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         (foreignKeys = {@ForeignKey(entity = User.class,
                 parentColumns = "uid",
                 childColumns = "userId",
-                onDelete = CASCADE), @ForeignKey(entity = Career.class,
-                parentColumns = "career_id",
-                childColumns = "career_id",
                 onDelete = CASCADE)})
 public class Profile {
 
@@ -28,7 +25,7 @@ public class Profile {
 
     @ColumnInfo(name = "name")
     private String name;
-    private int career_id;
+    private String career_id;
     @ColumnInfo(name = "last_name")
     private String last_name;
     @ColumnInfo(name = "rut")
@@ -42,7 +39,7 @@ public class Profile {
 
     private int accumulated_score;
 
-    public Profile(String name, int career_id, String last_name, String rut,
+    public Profile(String name, String career_id, String last_name, String rut,
                    String gender, String birthdate, int userId, int accumulated_score) {
         this.name = name;
         this.career_id = career_id;
@@ -57,11 +54,11 @@ public class Profile {
     public Profile() {
     }
 
-    public int getCareer_id() {
+    public String getCareer_id() {
         return career_id;
     }
 
-    public void setCareer_id(int career_id) {
+    public void setCareer_id(String  career_id) {
         this.career_id = career_id;
     }
 
