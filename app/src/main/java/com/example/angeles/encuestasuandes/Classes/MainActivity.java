@@ -24,6 +24,7 @@ import android.widget.ThemedSpinnerAdapter;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.example.angeles.encuestasuandes.ParaHacerRequest.JsonObjectArrayRequest;
 import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
@@ -37,7 +38,9 @@ import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
+import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -303,12 +306,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             Profile actual_profile = appDatabase.profileDao().getOneProfile(aux);
                             setNameOnHeader(actual_profile.getName());
                         }
+                        appDatabase.encuestaDao().deleteAll();
+                        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                            @Override
+                            public void onResponse(JSONObject response) {
+                                JSONArray surveys_json_array = response.optJSONArray("surveys");
+                                for (int i = 0; i < surveys_json_array.length(); i++) {
+                                    JSONObject survey;
+                                    String name;
+                                    String description;
+                                    int score;
+                                    String start_date;
+                                    String end_date;
+                                    int max_responses;
+                                    int min_responses;
+                                    try {
+                                        survey = surveys_json_array.getJSONObject(i);
+                                        name = survey.getString("name");
+                                        description = survey.getString("description");
+                                        score = survey.getInt("score");
+                                        start_date = survey.getString("start_date");
+                                        end_date = survey.getString("end_date");
+                                        max_responses = survey.getInt("max_answers");
+                                        min_responses = survey.getInt("min_answers");
+                                        Encuesta encuesta = new Encuesta(name, description, score,
+                                                start_date, end_date, max_responses, min_responses);
+                                        Thread t = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                appDatabase.encuestaDao().insert(encuesta);
+                                            }
+                                        };
+                                        t.start();
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
+                            }
+                        };
+                        networkManager.getSurveys(listener, new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError error) {
+                                Log.d("asd", error.toString());
+                            }
+                        });
 
 
                     }
                 }).start();
                 setCredentialsOnHeader(email);
-
 
             }
         }
