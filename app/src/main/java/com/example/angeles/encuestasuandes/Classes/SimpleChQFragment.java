@@ -91,6 +91,8 @@ public class SimpleChQFragment extends Fragment {
                                 @Override
                                 public void onClick(View v) {
 
+                                    mListener.addSimple(children.getId());
+
                                     GetOtherQ(cantidad_p_abierta, cantidad_p_multiple, cantidad_p_alternativa, encuesta_id, children.getId());
 
 

@@ -152,6 +152,12 @@ public class NetworkManager implements Executor {
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
     }
 
+    public void updateAnswers(Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener, JSONObject payload) {
+
+        String url = BASE_URL + "app_calls/post_survey.json";
+        makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
+    }
 
     public void activateEmail(Response.Listener<JSONObject> listener,
                               Response.ErrorListener errorListener, String email) {

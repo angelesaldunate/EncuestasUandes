@@ -136,6 +136,7 @@ public class OpenQFragment extends Fragment {
                 appDatabase.openAnswerDao().insertAll(oa);
             }
         }).start();
+        mListener.addOpen(id_actual, respuesta);
 
 
         if (cantidad_p_multiple.size() == 0 && cantidad_p_abierta.size() == 0 && cantidad_p_alternativa.size() == 0) {
