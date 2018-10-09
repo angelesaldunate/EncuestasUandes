@@ -9,6 +9,16 @@ import android.arch.persistence.room.PrimaryKey;
  */
 @Entity
 public class Price {
+    @PrimaryKey(autoGenerate = true)
+    private int price_id;
+    @ColumnInfo(name = "name")
+    private String name;
+    @ColumnInfo(name = "description")
+    private String description;
+    @ColumnInfo(name = "endDate")
+    private String end_date;
+    private boolean is_available;
+
     public int getPrice_id() {
         return price_id;
     }
@@ -41,16 +51,6 @@ public class Price {
         this.end_date = end_date;
     }
 
-    @PrimaryKey(autoGenerate = true)
-    private int price_id;
-
-    @ColumnInfo(name = "name")
-    private String name;
-    @ColumnInfo(name = "description")
-    private String description;
-    @ColumnInfo(name = "endDate")
-    private String end_date;
-
     public boolean isIs_available() {
         return is_available;
     }
@@ -58,6 +58,4 @@ public class Price {
     public void setIs_available(boolean is_available) {
         this.is_available = is_available;
     }
-
-    private boolean is_available;
 }

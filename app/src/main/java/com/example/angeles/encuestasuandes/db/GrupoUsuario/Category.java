@@ -10,11 +10,13 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class Category {
     @PrimaryKey
-    @ColumnInfo(name= "id")
+    @ColumnInfo(name = "id")
     private int id;
 
-    @ColumnInfo(name= "name")
+    @ColumnInfo(name = "name")
     private String name;
+    @ColumnInfo(name = "selected")
+    private boolean selected;
 
     public Category(int id, String name, boolean selected) {
         this.id = id;
@@ -29,9 +31,6 @@ public class Category {
     public void setSelected(boolean selected) {
         this.selected = selected;
     }
-
-    @ColumnInfo(name= "selected")
-    private boolean selected;
 
     public int getId() {
         return id;

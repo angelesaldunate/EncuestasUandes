@@ -16,17 +16,18 @@ import java.util.List;
 public interface SimpleChoiceDao {
     @Query("SELECT * FROM simplechoice")
     List<SimpleChoice> getAllSimpleChoices();
+
     @Query("SELECT * FROM simplechoice WHERE simple_choice_id=:s_id LIMIT 1")
     SimpleChoice getOneSimpleChoice(int s_id);
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(SimpleChoice... simpleChoices);
+
     @Query("SELECT simple_choice_id FROM simplechoice WHERE choiceQId=:choiceqId ")
     List<Integer> getAllIdChoicebyQuestion(int choiceqId);
+
     @Query("SELECT content FROM simplechoice WHERE choiceQId=:choiceqId ")
     List<String> getAllcontentChoicebyQuestion(int choiceqId);
-
-
 
 
     @Query("DELETE FROM SimpleChoice")

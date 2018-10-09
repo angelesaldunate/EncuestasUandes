@@ -13,7 +13,6 @@ import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Encuestas.EncuestaDao;
 import com.example.angeles.encuestasuandes.db.GrupoUsuario.Category;
 import com.example.angeles.encuestasuandes.db.GrupoUsuario.CategoryDao;
-import com.example.angeles.encuestasuandes.db.GrupoUsuario.Group;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestionDao;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
@@ -30,8 +29,6 @@ import com.example.angeles.encuestasuandes.db.Respuestas.OpenAnswer;
 import com.example.angeles.encuestasuandes.db.Respuestas.OpenAnswerDao;
 import com.example.angeles.encuestasuandes.db.Respuestas.SimpleAnswer;
 import com.example.angeles.encuestasuandes.db.Respuestas.SimpleAnswerDao;
-import com.example.angeles.encuestasuandes.db.Usuario.Career;
-import com.example.angeles.encuestasuandes.db.Usuario.CareerDao;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.ProfileDao;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
@@ -44,29 +41,8 @@ import com.example.angeles.encuestasuandes.db.Usuario.UserDao;
 
 
 @Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class
-, Price.class, UserPrice.class, Category.class, Career.class, SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
+        , Price.class, UserPrice.class, Category.class,  SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
-    public abstract EncuestaDao encuestaDao();
-    public abstract ProfileDao profileDao();
-    public abstract PriceDao priceDao();
-    public abstract UserPriceDao userPriceDao();
-    public abstract OpenQuestionDao openQuestionDao();
-    public abstract MultipleQuestionDao multipleQuestionDao();
-    public abstract ChoiceQuestionDao choiceQuestionDao();
-    public abstract MultipleChoiceDao multipleChoiceDao();
-    public abstract SimpleChoiceDao simpleChoiceDao();
-    public abstract CareerDao careerDao();
-    public abstract SimpleAnswerDao simpleAnswerDao();
-    public abstract MultipleAnswerDao multipleAnswerDao();
-
-    public abstract CategoryDao categoryDao();
-
-    public abstract OpenAnswerDao openAnswerDao();
-
-
-
-
     private static AppDatabase INSTANCE;
 
     public static AppDatabase getDatabase(final Context context) {
@@ -81,4 +57,32 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract UserDao userDao();
+
+    public abstract EncuestaDao encuestaDao();
+
+    public abstract ProfileDao profileDao();
+
+    public abstract PriceDao priceDao();
+
+    public abstract UserPriceDao userPriceDao();
+
+    public abstract OpenQuestionDao openQuestionDao();
+
+    public abstract MultipleQuestionDao multipleQuestionDao();
+
+    public abstract ChoiceQuestionDao choiceQuestionDao();
+
+    public abstract MultipleChoiceDao multipleChoiceDao();
+
+    public abstract SimpleChoiceDao simpleChoiceDao();
+
+    public abstract SimpleAnswerDao simpleAnswerDao();
+
+    public abstract MultipleAnswerDao multipleAnswerDao();
+
+    public abstract CategoryDao categoryDao();
+
+    public abstract OpenAnswerDao openAnswerDao();
 }

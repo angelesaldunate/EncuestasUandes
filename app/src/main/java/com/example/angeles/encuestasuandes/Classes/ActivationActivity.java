@@ -20,6 +20,7 @@ public class ActivationActivity extends AppCompatActivity {
 
     NetworkManager networkManager;
     TextView email_text_view;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,13 +43,12 @@ public class ActivationActivity extends AppCompatActivity {
                     public void onResponse(JSONObject response) {
 
                         int status = response.optInt("status");
-                        if (status ==200){
+                        if (status == 200) {
                             String enviado = "Se ha enviado un mail con tu contraseña a: ";
-                            Toast toast = Toast.makeText(getApplicationContext(), enviado+mail, duration);
+                            Toast toast = Toast.makeText(getApplicationContext(), enviado + mail, duration);
                             toast.show();
                             finish();
-                        }
-                        else{
+                        } else {
                             String message = response.optString("message");
                             Toast toast = Toast.makeText(getApplicationContext(), message, duration);
                             toast.show();
@@ -57,10 +57,10 @@ public class ActivationActivity extends AppCompatActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Toast toast = Toast.makeText(getApplicationContext(),"Error de red", duration);
+                        Toast toast = Toast.makeText(getApplicationContext(), "Error de red", duration);
                         toast.show();
                     }
-                },mail);
+                }, mail);
 
             }
         });

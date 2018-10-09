@@ -52,14 +52,14 @@ import static android.provider.AlarmClock.EXTRA_MESSAGE;
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
 
+    private static final String DATABASE_NAME = "encuestas_db";
+    static private AppDatabase appDatabase;
+    NetworkManager networkManager;
     // UI references.
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
-    static private AppDatabase appDatabase;
-    private static final String DATABASE_NAME = "encuestas_db";
-    NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +67,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        appDatabase = Room.databaseBuilder(this,AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
+        appDatabase = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.colorligthBlue)));
 
         networkManager = NetworkManager.getInstance(getApplicationContext());
@@ -104,45 +104,42 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void attemptLogin() {
 
 
-
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         showProgress(true);
 
-        try{
-        networkManager.login(email,password, new Response.Listener<JSONObject>() {
-            @Override
-            public void onResponse(JSONObject response) {
-                int status = response.optInt("status");
-                showProgress(false);
-                if(status== HttpURLConnection.HTTP_OK){
-                    Toast.makeText(getApplicationContext(),"Login Correct",Toast.LENGTH_LONG).show();
-                    Intent resultIntent = new Intent();
-                    resultIntent.putExtra("email_devuelto",email);
-                    resultIntent.putExtra("password_devuelto",password);
-                    setResult(MainActivity.RESULT_OK, resultIntent);
-                    finish();
-                    //
+        try {
+            networkManager.login(email, password, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    int status = response.optInt("status");
+                    showProgress(false);
+                    if (status == HttpURLConnection.HTTP_OK) {
+                        Toast.makeText(getApplicationContext(), "Login Correct", Toast.LENGTH_LONG).show();
+                        Intent resultIntent = new Intent();
+                        resultIntent.putExtra("email_devuelto", email);
+                        resultIntent.putExtra("password_devuelto", password);
+                        setResult(MainActivity.RESULT_OK, resultIntent);
+                        finish();
+                        //
+                    } else {
+
+                        Toast.makeText(getApplicationContext(), "Credenciales invalidas", Toast.LENGTH_LONG).show();
+
+
+                        //
+                    }
+
                 }
-                else{
-
-                    Toast.makeText(getApplicationContext(),"Credenciales invalidas",Toast.LENGTH_LONG).show();
-
-
-
-                    //
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    showProgress(false);
+                    Toast.makeText(getApplicationContext(), "Error de conexion", Toast.LENGTH_SHORT);
                 }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                showProgress(false);
-                Toast.makeText(getApplicationContext(),"Error de conexion",Toast.LENGTH_SHORT);
-            }
-        });}
-        catch (JSONException e){
+            });
+        } catch (JSONException e) {
 
             e.printStackTrace();
         }
@@ -204,12 +201,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 //Revisar la base de datos para ver si tiene perfil o no, pero puede que no este creado en la bd
                 boolean profile_exist = true;
-                User current= appDatabase.userDao().getOneUser(email);
-                if (current == null){
+                User current = appDatabase.userDao().getOneUser(email);
+                if (current == null) {
                     //no hay usuario ni perfil
-                    profile_exist= false;
-                }else{// esta el usuario pero no el perfil
-                    if (appDatabase.profileDao().getOneProfile(current.getUid())==null){
+                    profile_exist = false;
+                } else {// esta el usuario pero no el perfil
+                    if (appDatabase.profileDao().getOneProfile(current.getUid()) == null) {
                         profile_exist = false;
                     }
                 }
@@ -238,8 +235,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                             toast.show();
 
                             Intent resultIntent = new Intent();
-                            resultIntent.putExtra("email_devuelto",email);
-                            resultIntent.putExtra("password_devuelto",password);
+                            resultIntent.putExtra("email_devuelto", email);
+                            resultIntent.putExtra("password_devuelto", password);
                             setResult(MainActivity.RESULT_OK, resultIntent);
                             finish();
                         }
@@ -339,6 +336,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mEmailView.setAdapter(adapter);
     }
 
+    public void activate_account() {
+        Intent intent = new Intent(this, ActivationActivity.class);
+        startActivity(intent);
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -349,11 +350,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
     }
-    public void activate_account(){
-        Intent intent = new Intent(this, ActivationActivity.class);
-        startActivity(intent);
-    }
-
 
     public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 
@@ -375,7 +371,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             } catch (InterruptedException e) {
                 return false;
             }
-
 
 
             // TODO: register the new account here.

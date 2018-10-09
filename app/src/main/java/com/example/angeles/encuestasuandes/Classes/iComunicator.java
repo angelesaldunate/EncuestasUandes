@@ -11,9 +11,13 @@ import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 
 public interface iComunicator {
     public SharedPreferences getSharedPreferences();
+
     public CredentialManage getCredentialManage();
+
     public AppDatabase getDb();
+
     public String getDate(Long time);
+
     public void updateProfile(Profile profile);
 
 

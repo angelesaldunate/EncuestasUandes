@@ -26,7 +26,6 @@ public class MultipleQuestion {
     private int eId;
 
 
-
     public int getEId() {
         return eId;
     }

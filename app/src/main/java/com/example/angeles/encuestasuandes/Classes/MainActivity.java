@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -20,8 +19,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.ThemedSpinnerAdapter;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.Alternativa.SimpleChoice;
@@ -31,28 +32,29 @@ import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
-import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 import com.google.firebase.FirebaseApp;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.Calendar;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
+
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iComunicator  {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iComunicator {
+    static final int SEND_MESSAGE = 1;
+    private static final String DATABASE_NAME = "encuestas_db";
     static private AppDatabase appDatabase;
     static private SharedPreferences sharedPreferences;
     static private CredentialManage credentialManager;
-    private static final String DATABASE_NAME = "encuestas_db";
-    static final int SEND_MESSAGE = 1;
-
+    private NetworkManager networkManager;
 
 
     @Override
@@ -64,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         appDatabase = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
         sharedPreferences = getPreferences(Context.MODE_PRIVATE);
         credentialManager = new CredentialManage(this);
+        networkManager = NetworkManager.getInstance(this);
 
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -127,12 +130,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     MultipleChoice mc = new MultipleChoice();
                     mc.setMultipleQId(ch3.get(0));
                     mc.setContent("M!111111");
-                    appDatabase.multipleChoiceDao().insertAll(mc,mc);
+                    appDatabase.multipleChoiceDao().insertAll(mc, mc);
                     MultipleChoice mc2 = new MultipleChoice();
                     mc2.setMultipleQId(ch3.get(1));
                     mc2.setContent("M!2222");
 
-                    appDatabase.multipleChoiceDao().insertAll(mc2,mc2);
+                    appDatabase.multipleChoiceDao().insertAll(mc2, mc2);
 
                     ChoiceQuestion ch = new ChoiceQuestion();
                     ch.setEId(oth.getEnid());
@@ -147,18 +150,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     sm2.setChoiceQId(ch2.get(0));
                     sm2.setContent("Chaooo");
                     appDatabase.simpleChoiceDao().insertAll(sm2);
-                    Career cr = new Career();
-                    cr.setName("ING");
-                    appDatabase.careerDao().insertAll(cr);
+
 
                     OpenQuestion oq = new OpenQuestion();
                     oq.setEId(oth.getEnid());
                     oq.setEnunciado("Cuentame como te sientes");
                     appDatabase.openQuestionDao().insertAll(oq);
-
-
-
-
 
 
                 }
@@ -221,12 +218,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
-        }else if (id == R.id.nav_settings){
+        } else if (id == R.id.nav_settings) {
             fragment = new PreferencesFragment();
             getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
-        }
-        else if (id == R.id.nav_logout) {
+        } else if (id == R.id.nav_logout) {
             logOut();
 
         }
@@ -244,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 final String email = data.getStringExtra("email_devuelto");
                 final String password = data.getStringExtra("password_devuelto");
 
-             //   credentialManager.guardarCredenciales(email, password);
+                //   credentialManager.guardarCredenciales(email, password);
 
 
                 new Thread(new Runnable() {
@@ -253,11 +249,56 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         if (appDatabase.userDao().getOneUser(email) == null) {
                             appDatabase.userDao().insertAll(new User(email, password));
                             int ide = appDatabase.userDao().getOneUser(email).getUid();
+                            Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                                @Override
+                                public void onResponse(JSONObject response) {
+                                    JSONObject profile_json_object = response.optJSONObject("profile_info");
+                                    String first_name;
+                                    String last_name;
+                                    String career;
+                                    String rut;
+                                    String gender;
+                                    String birthdate;
+                                    int acc_score;
+                                    try {
+                                        first_name = profile_json_object.getString("first_name");
+                                        last_name = profile_json_object.getString("last_name");
+                                        career = profile_json_object.getString("career_id");
+                                        rut = profile_json_object.getString("rut");
+                                        gender = profile_json_object.getString("gender");
+                                        birthdate = profile_json_object.getString("birthdate");
+                                        acc_score = profile_json_object.getInt("accumulated_score");
+                                        Profile profile = new Profile(first_name, career, last_name,
+                                                rut, gender, birthdate, ide, acc_score);
+                                        Thread t = new Thread() {
+                                            @Override
+                                            public void run() {
+                                                appDatabase.profileDao().insert(profile);
+                                            }
+                                        };
+                                        t.start();
+                                        setNameOnHeader(profile.getName());
+                                        setScoreOnHeader(profile.getAccumulated_score());
+
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
+                                    }
+
+                                }
+                            };
+                            networkManager.getProfile(listener, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.d("asd", error.toString());
+                                }
+                            });
 
                         } else {
                             User current = appDatabase.userDao().getOneUser(email);
-                            Profile actual_profile = appDatabase.profileDao().getOneProfile(current.getUid());
+                            int aux = current.getUid();
+                            Profile actual_profile = appDatabase.profileDao().getOneProfile(aux);
                             setNameOnHeader(actual_profile.getName());
+
                         }
 
 
@@ -269,6 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }
     }
+
     public void logOut() {
         credentialManager.borrarCredenciales();
         Intent intent = new Intent(this, LoginActivity.class);
@@ -286,11 +328,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Fragment fragment = new AllEncuestasFragment();
         getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
     }
-    public void setNameOnHeader( String name){
+
+    public void setNameOnHeader(String name) {
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         View headerView = (navigationView.getHeaderView(0));
         TextView textviewnombre = headerView.findViewById(R.id.nav_name);
         textviewnombre.setText(name);
+    }
+    public void setScoreOnHeader(int score){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textviewnombre = headerView.findViewById(R.id.nav_score);
+        textviewnombre.setText(Integer.toString(score));
+
     }
 
     @Override
@@ -316,7 +366,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
         return date;
     }
-    public String dateToTimestamp(){
+
+    public String dateToTimestamp() {
         Calendar cal = GregorianCalendar.getInstance();
         cal.set(Calendar.DAY_OF_MONTH, 23);// I might have the wrong Calendar constant...
         cal.set(Calendar.MONTH, 8);// -1 as month is zero-based
@@ -324,18 +375,19 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
         return tstamp.toString();
     }
-    public void updateProfile(final Profile perfiln){
+
+        public void updateProfile(final Profile perfiln) {
 
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
 
-                        appDatabase.profileDao().update(perfiln);
+                appDatabase.profileDao().update(perfiln);
 
-                    }
-                }).start();
-                setNameOnHeader(perfiln.getName());
+            }
+        }).start();
+        setNameOnHeader(perfiln.getName());
 
     }
 

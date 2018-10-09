@@ -25,7 +25,6 @@ public class OpenQuestion {
     private int eId;
 
 
-
     public int getEId() {
         return eId;
     }

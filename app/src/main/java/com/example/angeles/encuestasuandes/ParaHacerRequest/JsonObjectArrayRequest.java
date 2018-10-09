@@ -1,18 +1,17 @@
 package com.example.angeles.encuestasuandes.ParaHacerRequest;
 
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.ParseError;
+import com.android.volley.Response;
+import com.android.volley.toolbox.HttpHeaderParser;
+import com.android.volley.toolbox.JsonObjectRequest;
 
-        import com.android.volley.NetworkResponse;
-        import com.android.volley.ParseError;
-        import com.android.volley.Response;
-        import com.android.volley.toolbox.HttpHeaderParser;
-        import com.android.volley.toolbox.JsonObjectRequest;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
-        import org.json.JSONArray;
-        import org.json.JSONException;
-        import org.json.JSONObject;
-
-        import java.io.UnsupportedEncodingException;
+import java.io.UnsupportedEncodingException;
 
 public class JsonObjectArrayRequest extends JsonObjectRequest {
     public JsonObjectArrayRequest(int method, String url, JSONObject jsonRequest, Response.Listener<JSONObject> listener, Response.ErrorListener errorListener) {
@@ -31,7 +30,7 @@ public class JsonObjectArrayRequest extends JsonObjectRequest {
 
             try {
                 object = new JSONObject(jsonString);
-            } catch (JSONException e){
+            } catch (JSONException e) {
                 JSONArray array = new JSONArray(jsonString);
                 object = new JSONObject();
                 object.put("0", array);

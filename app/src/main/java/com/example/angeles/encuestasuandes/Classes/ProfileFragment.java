@@ -8,18 +8,13 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
-import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
-import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
-
-import java.util.List;
 
 
 public class ProfileFragment extends Fragment {
@@ -31,6 +26,7 @@ public class ProfileFragment extends Fragment {
     public ProfileFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +40,7 @@ public class ProfileFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_profile, container, false);
     }
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         final TextView name = (TextView) view.findViewById(R.id.user_profile_name);
@@ -60,23 +57,22 @@ public class ProfileFragment extends Fragment {
             public void run() {
                 final User current_user = appDatabase.userDao().getOneUser(credentialManager.getEmail());
                 final Profile current_profile = appDatabase.profileDao().getOneProfile(current_user.getUid());
-                if (current_profile!= null){
-                    final Career current_career = appDatabase.careerDao().getOneCareer(current_profile.getCareer_id());
+                if (current_profile != null) {
 
                     Handler mainHandler = new Handler(getActivity().getMainLooper());
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
+                    mainHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
 
-                        name.setText(current_profile.getName().toString()+" "+ current_profile.getLast_name().toString());
-                        mail.setText(credentialManager.getEmail());
-                        rut.setText(current_profile.getRut());
-                        genero.setText(current_profile.getGender());
-                        fecha.setText(current_profile.getBirthdate());
-                        carrera.setText(current_career.getName());
+                            name.setText(current_profile.getName().toString() + " " + current_profile.getLast_name().toString());
+                            mail.setText(credentialManager.getEmail());
+                            rut.setText(current_profile.getRut());
+                            genero.setText(current_profile.getGender());
+                            fecha.setText(current_profile.getBirthdate());
+                            carrera.setText(current_profile.getCareer_id());
 
-                            }
-                        });
+                        }
+                    });
                 }
 
             }
@@ -92,11 +88,8 @@ public class ProfileFragment extends Fragment {
         });
 
 
-
-
-
-
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

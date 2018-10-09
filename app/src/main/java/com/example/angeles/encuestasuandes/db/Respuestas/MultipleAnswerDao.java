@@ -16,6 +16,7 @@ import java.util.List;
 public interface MultipleAnswerDao {
     @Query("SELECT * FROM multipleanswer")
     List<MultipleAnswer> getAllMultipleAnswer();
+
     @Query("SELECT * FROM MultipleAnswer WHERE multiple_answer_id=:ans_id LIMIT 1")
     MultipleAnswer getOneMultipleAnswer(int ans_id);
 

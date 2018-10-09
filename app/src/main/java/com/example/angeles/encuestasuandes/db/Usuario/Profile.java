@@ -17,30 +17,50 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
         (foreignKeys = {@ForeignKey(entity = User.class,
                 parentColumns = "uid",
                 childColumns = "userId",
-                onDelete = CASCADE), @ForeignKey(entity = Career.class,
-                parentColumns = "career_id",
-                childColumns = "career_id",
                 onDelete = CASCADE)})
 public class Profile {
 
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     private int prid;
 
     @ColumnInfo(name = "name")
     private String name;
+    private String career_id;
+    @ColumnInfo(name = "last_name")
+    private String last_name;
+    @ColumnInfo(name = "rut")
+    private String rut;
+    @ColumnInfo(name = "gender")
+    private String gender;
+    @ColumnInfo(name = "birthdate")
+    private String birthdate;
+    private int userId;
 
 
-    private int career_id;
+    private int accumulated_score;
 
-    public int getCareer_id() {
+    public Profile(String name, String career_id, String last_name, String rut,
+                   String gender, String birthdate, int userId, int accumulated_score) {
+        this.name = name;
+        this.career_id = career_id;
+        this.last_name = last_name;
+        this.rut = rut;
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.userId = userId;
+        this.accumulated_score = accumulated_score;
+    }
+
+    public Profile() {
+    }
+
+    public String getCareer_id() {
         return career_id;
     }
 
-    public void setCareer_id(int career_id) {
+    public void setCareer_id(String  career_id) {
         this.career_id = career_id;
     }
-
-
 
     public String getLast_name() {
         return last_name;
@@ -74,21 +94,6 @@ public class Profile {
         this.birthdate = birthdate;
     }
 
-
-    @ColumnInfo(name = "last_name")
-    private String last_name;
-
-    @ColumnInfo(name = "rut")
-    private String rut;
-
-    @ColumnInfo(name = "gender")
-    private String gender;
-
-    @ColumnInfo(name = "birthdate")
-    private String birthdate;
-
-
-
     public int getUserId() {
         return userId;
     }
@@ -96,12 +101,6 @@ public class Profile {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
-    private int userId;
-
-
-
-
 
     public int getPrid() {
         return prid;
@@ -120,5 +119,12 @@ public class Profile {
         this.name = name;
     }
 
+    public int getAccumulated_score() {
+        return accumulated_score;
+    }
+
+    public void setAccumulated_score(int accumulated_score) {
+        this.accumulated_score = accumulated_score;
+    }
 
 }

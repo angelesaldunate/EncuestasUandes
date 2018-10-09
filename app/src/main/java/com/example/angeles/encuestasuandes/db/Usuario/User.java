@@ -13,7 +13,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class User {
 
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     private int uid;
 
     @ColumnInfo(name = "email")
@@ -23,11 +23,9 @@ public class User {
     private String password;
 
 
-
-
     public User(String email, String password) {
         this.email = email;
-        this.password=password;
+        this.password = password;
 
     }
 
@@ -47,6 +45,7 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+
     public String getPassword() {
         return password;
     }

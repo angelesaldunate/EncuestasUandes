@@ -14,11 +14,13 @@ import java.util.List;
 public interface ChoiceQuestionDao {
     @Query("SELECT * FROM choicequestion")
     List<ChoiceQuestion> getAllChoiceQ();
+
     @Query("SELECT * FROM choicequestion WHERE choice_q_id=:ch_id LIMIT 1")
     ChoiceQuestion getOneChoiceQuestion(int ch_id);
 
     @Query("SELECT * FROM choicequestion WHERE eId=:eId ")
     List<ChoiceQuestion> getAllChoicebyEncuestaid(int eId);
+
     @Query("SELECT choice_q_id FROM choicequestion WHERE eId=:eId ")
     List<Integer> getAllIdChoicebyEncuestaid(int eId);
 

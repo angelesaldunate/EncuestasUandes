@@ -19,8 +19,13 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 onDelete = CASCADE), @ForeignKey(entity = Price.class,
                 parentColumns = "price_id",
                 childColumns = "priceId",
-                onDelete = CASCADE)} )
+                onDelete = CASCADE)})
 public class UserPrice {
+    @PrimaryKey(autoGenerate = true)
+    private int user_price_id;
+    private int userId;
+    private int priceId;
+
     public int getUser_price_id() {
         return user_price_id;
     }
@@ -44,9 +49,4 @@ public class UserPrice {
     public void setPriceId(int priceId) {
         this.priceId = priceId;
     }
-
-    @PrimaryKey(autoGenerate = true)
-    private int user_price_id;
-    private int userId;
-    private int priceId;
 }

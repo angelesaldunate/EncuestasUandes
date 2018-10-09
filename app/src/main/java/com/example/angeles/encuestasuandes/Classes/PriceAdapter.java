@@ -47,13 +47,12 @@ public class PriceAdapter extends ArrayAdapter<Price> {
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)  {
+    public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         final Price price = getItem(position);
         // Check if an existing view is being reused, otherwise inflate the view
 
         convertView = lf.inflate(R.layout.list_price_adapter, parent, false);
-
 
 
         // Lookup view for data population
@@ -73,15 +72,14 @@ public class PriceAdapter extends ArrayAdapter<Price> {
                         descriptionPrice.setText(price.getDescription());
 
 
-
                     }
                 });
-            }}).start();
+            }
+        }).start();
 
         // Return the completed view to render on screen
         return convertView;
     }
-
 
 
 }

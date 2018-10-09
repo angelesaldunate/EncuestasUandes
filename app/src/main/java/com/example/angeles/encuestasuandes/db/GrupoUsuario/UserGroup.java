@@ -38,7 +38,6 @@ public class UserGroup {
     }
 
 
-
     public int getUserId() {
         return userId;
     }

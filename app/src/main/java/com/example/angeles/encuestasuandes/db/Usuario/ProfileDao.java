@@ -17,12 +17,15 @@ public interface ProfileDao {
 
     @Query("SELECT * FROM profile")
     List<Profile> getAllProfile();
+
     @Query("SELECT * FROM profile WHERE userId=:userId LIMIT 1")
     Profile getOneProfile(int userId);
 
     @Insert
     void insertAll(Profile... profile);
 
+    @Insert
+    void insert(Profile profile);
 
     @Query("DELETE FROM profile")
     void deleteAll();

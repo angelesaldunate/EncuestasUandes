@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
@@ -31,9 +34,9 @@ import java.util.List;
 public class AllEncuestasFragment extends Fragment {
     private static final String DATABASE_NAME = "encuestas_db";
     private static AppDatabase appDatabase;
+    String tipo;
     private List<Encuesta> all;
     private iComunicator mListener;
-    String tipo;
     private CredentialManage credentialManager;
     private List<Encuesta> filtered_encuestas;
 
@@ -47,9 +50,9 @@ public class AllEncuestasFragment extends Fragment {
         credentialManager = mListener.getCredentialManage();
         appDatabase = mListener.getDb();
     }
-    @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
 
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
 
 
         final View final_view = view;
@@ -64,21 +67,16 @@ public class AllEncuestasFragment extends Fragment {
             @Override
             public void run() {
                 SystemClock.sleep(1000);
-                if (tipo!= null){
-                    if(tipo == "Puntaje"){
+                if (tipo != null) {
+                    if (tipo == "Puntaje") {
                         all = appDatabase.encuestaDao().getAllEncuesta();
 
-                    }else{
+                    } else {
                         all = appDatabase.encuestaDao().getAllEncuestabyfilter();
-
                     }
-
-                }else{
+                } else {
                     all = appDatabase.encuestaDao().getAllEncuesta();
-
                 }
-
-
                 Handler mainHandler = new Handler(getActivity().getMainLooper());
                 mainHandler.post(new Runnable() {
                     @Override
@@ -103,52 +101,45 @@ public class AllEncuestasFragment extends Fragment {
 
                                         Bundle bund = new Bundle();
                                         Fragment fragment;
-                                        if (all_index_open.size()>0){
+                                        if (all_index_open.size() > 0) {
 
-                                          fragment = new OpenQFragment();
+                                            fragment = new OpenQFragment();
                                             bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
                                             int primer_index = all_index_open.get(0);
                                             bund.putInt("id_actual", primer_index);
                                             all_index_open.remove(0);
-                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
                                             bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
                                             fragment.setArguments(bund);
                                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
-                                        }else if(all_index_choice.size()>0){
+                                        } else if (all_index_choice.size() > 0) {
 
                                             fragment = new SimpleChQFragment();
                                             bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
                                             int primer_index = all_index_choice.get(0);
                                             bund.putInt("id_actual", primer_index);
                                             all_index_choice.remove(0);
-                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
                                             bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
                                             fragment.setArguments(bund);
-                                           getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
-                                        }
-                                        else if(all_index_multiple.size()>0){
+                                        } else if (all_index_multiple.size() > 0) {
                                             fragment = new MultipleQFragment();
                                             bund.putInt("encuesta_id", encuesta_seleccionada.getEnid());
                                             int primer_index = all_index_multiple.get(0);
                                             bund.putInt("id_actual", primer_index);
                                             all_index_multiple.remove(0);
-                                            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
+                                            bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
                                             bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-                                            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
+                                            bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
                                             fragment.setArguments(bund);
                                             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
-
-
                                         }
-
-
-
-
                                     }
                                 }).start();
 
@@ -156,26 +147,26 @@ public class AllEncuestasFragment extends Fragment {
                         });
 
 
-
                     }
                 });
 
             }
-        }) .start();
+        }).start();
         Button apply = (Button) view.findViewById(R.id.button_apply);
         apply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Spinner spinner = (Spinner) final_view.findViewById(R.id.spinner_sectors_search);
-                Bundle bund  = new Bundle();
+                Bundle bund = new Bundle();
                 String text = spinner.getSelectedItem().toString();
-                bund.putString("filtro",text);
+                bund.putString("filtro", text);
                 AllEncuestasFragment fragment = new AllEncuestasFragment();
                 fragment.setArguments(bund);
-                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew,fragment).addToBackStack("null").commit();
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
-            }});
+            }
+        });
 
 
     }

@@ -16,6 +16,7 @@ import java.util.List;
 public interface UserPriceDao {
     @Query("SELECT * FROM UserPrice")
     List<UserPrice> getAllProfile();
+
     @Query("SELECT * FROM userprice WHERE user_price_id=:userId LIMIT 1")
     UserPrice getOneUserPrice(int userId);
 
