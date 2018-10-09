@@ -29,6 +29,18 @@
             android:name=".Classes.LoginActivity"
             android:label="@string/title_activity_login" />
         <activity android:name=".Classes.ActivationActivity"></activity>
+        <service android:name=".Classes.MyFirebaseMessagingService">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+        <meta-data
+            android:name="firebase_messaging_auto_init_enabled"
+            android:value="false" />
+        <meta-data
+            android:name="firebase_analytics_collection_enabled"
+            android:value="false" />
+
     </application>
 
 </manifest>

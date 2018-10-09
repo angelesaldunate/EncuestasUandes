@@ -39,7 +39,7 @@ public class NetworkManager implements Executor {
 
 
 
-    public static final String BASE_URL = "http://192.168.0.103:3000/";
+    public static final String BASE_URL = "http://167.99.236.252:80/";
 
     private static String token =  "";
 

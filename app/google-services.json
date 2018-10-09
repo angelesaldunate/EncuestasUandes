@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "435130770708",
+    "firebase_url": "https://encuestasuandes-9a748.firebaseio.com",
+    "project_id": "encuestasuandes-9a748",
+    "storage_bucket": "encuestasuandes-9a748.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:435130770708:android:892358b885966578",
+        "android_client_info": {
+          "package_name": "com.example.angeles.encuestasuandes"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "435130770708-ad4hfv7ded0f6u8tiqdq249q6nt4uvg5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.angeles.encuestasuandes",
+            "certificate_hash": "de7a254e8b65ac7a65f0c35ba319550e8500d0b8"
+          }
+        },
+        {
+          "client_id": "435130770708-didmgk22erarheb21nmuqgg7brppq6b3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNHXlvHHN1QYfNHhuJH5iqddQnG1imgsc"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "435130770708-didmgk22erarheb21nmuqgg7brppq6b3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
