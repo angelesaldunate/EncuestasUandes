@@ -39,8 +39,11 @@ public class Profile {
     private String birthdate;
     private int userId;
 
+
+    private int accumulated_score;
+
     public Profile(String name, int career_id, String last_name, String rut,
-                   String gender, String birthdate, int userId) {
+                   String gender, String birthdate, int userId, int accumulated_score) {
         this.name = name;
         this.career_id = career_id;
         this.last_name = last_name;
@@ -48,6 +51,7 @@ public class Profile {
         this.gender = gender;
         this.birthdate = birthdate;
         this.userId = userId;
+        this.accumulated_score = accumulated_score;
     }
 
     public Profile() {
@@ -116,6 +120,14 @@ public class Profile {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public int getAccumulated_score() {
+        return accumulated_score;
+    }
+
+    public void setAccumulated_score(int accumulated_score) {
+        this.accumulated_score = accumulated_score;
     }
 
 }
