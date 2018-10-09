@@ -17,6 +17,7 @@ import java.util.List;
 public interface MultipleChoiceDao {
     @Query("SELECT * FROM multiplechoice")
     List<MultipleChoice> getAllMultipleChoice();
+
     @Query("SELECT * FROM multiplechoice WHERE multiple_choice_id=:m_id LIMIT 1")
     MultipleChoice getOneMultipleChoice(int m_id);
 
@@ -26,8 +27,10 @@ public interface MultipleChoiceDao {
 
     @Query("DELETE FROM MultipleChoice")
     void deleteAll();
+
     @Query("SELECT multiple_choice_id FROM multiplechoice WHERE multipleQId=:multipleqId ")
     List<Integer> getAllIdMuChoicebyQuestion(int multipleqId);
+
     @Query("SELECT content FROM multiplechoice WHERE multipleQId=:choiceqId ")
     List<String> getAllcontentMChoicebyQuestion(int choiceqId);
 

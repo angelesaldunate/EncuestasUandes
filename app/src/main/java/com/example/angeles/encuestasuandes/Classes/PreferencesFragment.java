@@ -39,16 +39,16 @@ import java.util.List;
 
 public class PreferencesFragment extends Fragment {
     private static AppDatabase appDatabase;
+    Handler handler = new Handler();
     private iComunicator mListener;
     private CredentialManage credentialManager;
-
     private NetworkManager networkManager;
     private View inflatedView;
-
 
     public PreferencesFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +57,6 @@ public class PreferencesFragment extends Fragment {
         networkManager = NetworkManager.getInstance(getContext());
 
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,11 +72,12 @@ public class PreferencesFragment extends Fragment {
         });
         return inflatedView;
     }
+
     public void onViewCreated(final View view, Bundle savedInstanceState) {
 
 
-
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -92,42 +92,36 @@ public class PreferencesFragment extends Fragment {
         mListener = null;
     }
 
-
-
-    Handler handler= new Handler();
-
-    void configure_categories(){
+    void configure_categories() {
 
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         // String array for alert dialog multi choice items
 
-        Thread thread = new Thread(){
-            public void run(){
-                Category[] categories =  appDatabase.categoryDao().getAllCategory();
-                if (categories.length==0){
+        Thread thread = new Thread() {
+            public void run() {
+                Category[] categories = appDatabase.categoryDao().getAllCategory();
+                if (categories.length == 0) {
 
                     networkManager.getCategories(new Response.Listener<JSONObject>() {
                         @Override
                         public void onResponse(JSONObject response) {
 
-
                             JSONArray categories_json_array = response.optJSONArray("categories");
                             Gson gson = new Gson();
                             Category[] categories = gson.fromJson(categories_json_array.toString(), Category[].class);
-                            Thread  t = new Thread(){
+                            Thread t = new Thread() {
 
                                 @Override
                                 public void run() {
-                                    for(Category c :categories) {
+                                    for (Category c : categories) {
                                         Category older = appDatabase.categoryDao().getCategorybyId(c.getId());
 
-                                        if (older!=null){
+                                        if (older != null) {
                                             older.setSelected(c.isSelected());
                                             older.setName(c.getName());
                                             appDatabase.categoryDao().updateCategory(older);
-                                        }
-                                        else{
+                                        } else {
                                             appDatabase.categoryDao().insert(c);
 
                                         }
@@ -136,15 +130,15 @@ public class PreferencesFragment extends Fragment {
 
                                     String[] names = new String[categories.length];
 
-                                    for (int i =0; i<categories.length;i++){
+                                    for (int i = 0; i < categories.length; i++) {
 
-                                        names[i]=categories[i].getName();
+                                        names[i] = categories[i].getName();
                                     }
-                                    boolean[] checked_cats= new boolean[categories.length];
+                                    boolean[] checked_cats = new boolean[categories.length];
 
-                                    for (int i =0; i<categories.length;i++){
+                                    for (int i = 0; i < categories.length; i++) {
 
-                                        checked_cats[i]=categories[i].isSelected();
+                                        checked_cats[i] = categories[i].isSelected();
                                     }
 
 
@@ -179,7 +173,7 @@ public class PreferencesFragment extends Fragment {
                                             checked_cats[which] = isChecked;
 
                                             // Get the current focused item
-                                            String currentItem =namesList.get(which);
+                                            String currentItem = namesList.get(which);
 
                                             // Notify the current action
                                             Toast.makeText(getContext(),
@@ -199,10 +193,10 @@ public class PreferencesFragment extends Fragment {
                                         public void onClick(DialogInterface dialog, int which) {
                                             // Do something when click positive button
                                             // tv.setText("Your preferred colors..... \n");
-                                            ArrayList<Integer> interest_categories_ids=new ArrayList<>();
+                                            ArrayList<Integer> interest_categories_ids = new ArrayList<>();
                                             JSONObject payload = new JSONObject();
                                             JSONArray interest_categories_ja = new JSONArray();
-                                            for (int i = 0; i<checked_cats.length; i++){
+                                            for (int i = 0; i < checked_cats.length; i++) {
                                                 boolean checked = checked_cats[i];
                                                 categories[i].setSelected(checked);
                                                 if (checked) {
@@ -213,10 +207,9 @@ public class PreferencesFragment extends Fragment {
                                                 }
                                             }
 
-                                            try{
-                                                payload.put("interest_categories",interest_categories_ja);}
-
-                                            catch (JSONException e ){
+                                            try {
+                                                payload.put("interest_categories", interest_categories_ja);
+                                            } catch (JSONException e) {
 
                                                 e.printStackTrace();
                                             }
@@ -225,7 +218,7 @@ public class PreferencesFragment extends Fragment {
                                                 public void onResponse(JSONObject response) {
 
 
-                                                    Thread t = new Thread(){
+                                                    Thread t = new Thread() {
 
 
                                                         @Override
@@ -241,8 +234,7 @@ public class PreferencesFragment extends Fragment {
                                                 public void onErrorResponse(VolleyError error) {
 
                                                 }
-                                            },payload);
-
+                                            }, payload);
 
 
                                         }
@@ -265,7 +257,6 @@ public class PreferencesFragment extends Fragment {
                                     });
 
 
-
                                     handler.post(new Runnable() {
                                         @Override
                                         public void run() {
@@ -276,10 +267,6 @@ public class PreferencesFragment extends Fragment {
                                     });
 
 
-
-
-
-
                                 }
                             };
                             t.start();
@@ -287,24 +274,21 @@ public class PreferencesFragment extends Fragment {
                     }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-
                         }
                     });
-                }
-
-                else{
+                } else {
 
                     String[] names = new String[categories.length];
 
-                    for (int i =0; i<categories.length;i++){
+                    for (int i = 0; i < categories.length; i++) {
 
-                        names[i]=categories[i].getName();
+                        names[i] = categories[i].getName();
                     }
-                    boolean[] checked_cats= new boolean[categories.length];
+                    boolean[] checked_cats = new boolean[categories.length];
 
-                    for (int i =0; i<categories.length;i++){
+                    for (int i = 0; i < categories.length; i++) {
 
-                        checked_cats[i]=categories[i].isSelected();
+                        checked_cats[i] = categories[i].isSelected();
                     }
 
 
@@ -339,7 +323,7 @@ public class PreferencesFragment extends Fragment {
                             checked_cats[which] = isChecked;
 
                             // Get the current focused item
-                            String currentItem =namesList.get(which);
+                            String currentItem = namesList.get(which);
 
                             // Notify the current action
                             Toast.makeText(getContext(),
@@ -359,10 +343,10 @@ public class PreferencesFragment extends Fragment {
                         public void onClick(DialogInterface dialog, int which) {
                             // Do something when click positive button
                             // tv.setText("Your preferred colors..... \n");
-                            ArrayList<Integer> interest_categories_ids=new ArrayList<>();
+                            ArrayList<Integer> interest_categories_ids = new ArrayList<>();
                             JSONObject payload = new JSONObject();
                             JSONArray interest_categories_ja = new JSONArray();
-                            for (int i = 0; i<checked_cats.length; i++){
+                            for (int i = 0; i < checked_cats.length; i++) {
                                 boolean checked = checked_cats[i];
                                 categories[i].setSelected(checked);
                                 if (checked) {
@@ -374,10 +358,9 @@ public class PreferencesFragment extends Fragment {
 
                             }
 
-                            try{
-                            payload.put("interest_categories",interest_categories_ja);}
-
-                            catch (JSONException e ){
+                            try {
+                                payload.put("interest_categories", interest_categories_ja);
+                            } catch (JSONException e) {
 
                                 e.printStackTrace();
                             }
@@ -386,7 +369,7 @@ public class PreferencesFragment extends Fragment {
                                 public void onResponse(JSONObject response) {
 
 
-                                    Thread t = new Thread(){
+                                    Thread t = new Thread() {
 
 
                                         @Override
@@ -402,8 +385,7 @@ public class PreferencesFragment extends Fragment {
                                 public void onErrorResponse(VolleyError error) {
 
                                 }
-                            },payload);
-
+                            }, payload);
 
 
                         }
@@ -426,7 +408,6 @@ public class PreferencesFragment extends Fragment {
                     });
 
 
-
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
@@ -437,14 +418,11 @@ public class PreferencesFragment extends Fragment {
                     });
 
 
-
                 }
             }
         };
 
         thread.start();
-
-
 
 
     }

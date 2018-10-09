@@ -17,6 +17,7 @@ public interface UserDao {
 
     @Query("SELECT * FROM user")
     List<User> getAllUser();
+
     @Query("SELECT * FROM user WHERE email=:email LIMIT 1")
     User getOneUser(String email);
 

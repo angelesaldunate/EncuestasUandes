@@ -49,7 +49,6 @@ public class OpenAnswer {
     }
 
 
-
     public int getOpen_answer_id() {
         return open_answer_id;
     }
@@ -65,7 +64,6 @@ public class OpenAnswer {
     public void setAnswer(String answer) {
         this.answer = answer;
     }
-
 
 
 }

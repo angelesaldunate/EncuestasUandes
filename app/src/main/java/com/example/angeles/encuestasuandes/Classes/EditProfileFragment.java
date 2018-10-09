@@ -32,6 +32,7 @@ public class EditProfileFragment extends Fragment {
     public EditProfileFragment() {
         // Required empty public constructor
     }
+
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         credentialManager = mListener.getCredentialManage();
@@ -61,19 +62,19 @@ public class EditProfileFragment extends Fragment {
             public void run() {
                 final User current_user = appDatabase.userDao().getOneUser(credentialManager.getEmail());
                 final Profile current_profile = appDatabase.profileDao().getOneProfile(current_user.getUid());
-                if (current_profile!= null){
+                if (current_profile != null) {
                     Handler mainHandler = new Handler(getActivity().getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
 
-                            name.setText(current_profile.getName().toString()+" "+ current_profile.getLast_name().toString());
+                            name.setText(current_profile.getName().toString() + " " + current_profile.getLast_name().toString());
                             mail.setText(credentialManager.getEmail());
                             rut.setText(current_profile.getRut());
                             fecha.setText(current_profile.getBirthdate());
-                            if (current_profile.getGender().equals("Femenino")){
+                            if (current_profile.getGender().equals("Femenino")) {
                                 femenino.setChecked(true);
-                            }else{
+                            } else {
                                 masculino.setChecked(true);
                             }
 
@@ -93,47 +94,47 @@ public class EditProfileFragment extends Fragment {
 
                         User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
                         Profile perfil = appDatabase.profileDao().getOneProfile(current.getUid());
-                        if (perfil!= null) {
+                        if (perfil != null) {
                             perfil.setRut(rut.getText().toString());
 
                             String[] parts = name.getText().toString().split("\\s");
 
-                            if (parts.length > 1){
+                            if (parts.length > 1) {
                                 perfil.setName(parts[0]);
                                 String last_name = parts[1];
                                 perfil.setLast_name(last_name);
 
-                            }else {
+                            } else {
                                 perfil.setName(parts[0]);
                                 perfil.setLast_name(" ");
                             }
                             perfil.setBirthdate(fecha.getText().toString());
                             boolean checked2 = ((RadioButton) getView().findViewById(R.id.radioButton_female)).isChecked();
-                            if (checked2){
+                            if (checked2) {
                                 perfil.setGender("Femenino");
-                            }else{
+                            } else {
                                 perfil.setGender("Masculino");
                             }
 
 
                             mListener.updateProfile(perfil);
-                        }else{
-                            Profile perfiln =  new Profile();
+                        } else {
+                            Profile perfiln = new Profile();
                             String[] parts = name.getText().toString().split(" ");
 
-                            if (parts.length > 1){
+                            if (parts.length > 1) {
                                 perfiln.setName(parts[0]);
                                 String last_name = parts[1];
                                 perfiln.setLast_name(last_name);
 
-                            }else {
+                            } else {
                                 perfiln.setName(parts[0]);
                                 perfiln.setLast_name(" ");
                             }
                             boolean checked2 = ((RadioButton) getView().findViewById(R.id.radioButton_female)).isChecked();
-                            if (checked2){
+                            if (checked2) {
                                 perfiln.setGender("Femenino");
-                            }else{
+                            } else {
                                 perfiln.setGender("Masculino");
                             }
                             perfiln.setCareer_id(appDatabase.careerDao().getOneCareerbyName("ING").getCareer_id());
@@ -152,6 +153,7 @@ public class EditProfileFragment extends Fragment {
             }
         });
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);

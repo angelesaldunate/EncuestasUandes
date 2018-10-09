@@ -20,6 +20,8 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
 public class EncuestaCategory {
     @PrimaryKey(autoGenerate = true)
     private int encuesta_category_id;
+    private int enId;
+    private int categoryId;
 
     public int getEncuesta_category_id() {
         return encuesta_category_id;
@@ -44,7 +46,4 @@ public class EncuestaCategory {
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
     }
-
-    private int enId;
-    private int categoryId;
 }

@@ -26,7 +26,6 @@ public class SimpleChoice {
     private int choiceQId;
 
 
-
     public int getSimple_choice_id() {
         return simple_choice_id;
     }

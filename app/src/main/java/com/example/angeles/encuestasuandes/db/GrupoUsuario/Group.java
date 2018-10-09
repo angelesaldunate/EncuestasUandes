@@ -26,7 +26,6 @@ public class Group {
     private int categoryId;
 
 
-
     public int getCategoryId() {
         return categoryId;
     }
@@ -59,7 +58,6 @@ public class Group {
     public void setIs_editable(boolean is_editable) {
         this.is_editable = is_editable;
     }
-
 
 
 }

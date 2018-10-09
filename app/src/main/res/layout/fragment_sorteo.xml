@@ -4,15 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.example.angeles.encuestasuandes.Classes.SorteoFragment">
+
     <TextView
         android:id="@+id/textView_title_sorteo"
         android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:layout_height="wrap_content"
         android:text="Elige el premio para participar"
-        android:textSize="32sp"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        android:textSize="32sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -89,8 +90,6 @@
 
 
     </LinearLayout>
-
-
 
 
 </LinearLayout>

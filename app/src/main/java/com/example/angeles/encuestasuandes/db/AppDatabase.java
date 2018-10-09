@@ -44,29 +44,8 @@ import com.example.angeles.encuestasuandes.db.Usuario.UserDao;
 
 
 @Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class
-, Price.class, UserPrice.class, Category.class, Career.class, SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
+        , Price.class, UserPrice.class, Category.class, Career.class, SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
-    public abstract UserDao userDao();
-    public abstract EncuestaDao encuestaDao();
-    public abstract ProfileDao profileDao();
-    public abstract PriceDao priceDao();
-    public abstract UserPriceDao userPriceDao();
-    public abstract OpenQuestionDao openQuestionDao();
-    public abstract MultipleQuestionDao multipleQuestionDao();
-    public abstract ChoiceQuestionDao choiceQuestionDao();
-    public abstract MultipleChoiceDao multipleChoiceDao();
-    public abstract SimpleChoiceDao simpleChoiceDao();
-    public abstract CareerDao careerDao();
-    public abstract SimpleAnswerDao simpleAnswerDao();
-    public abstract MultipleAnswerDao multipleAnswerDao();
-
-    public abstract CategoryDao categoryDao();
-
-    public abstract OpenAnswerDao openAnswerDao();
-
-
-
-
     private static AppDatabase INSTANCE;
 
     public static AppDatabase getDatabase(final Context context) {
@@ -81,4 +60,34 @@ public abstract class AppDatabase extends RoomDatabase {
         }
         return INSTANCE;
     }
+
+    public abstract UserDao userDao();
+
+    public abstract EncuestaDao encuestaDao();
+
+    public abstract ProfileDao profileDao();
+
+    public abstract PriceDao priceDao();
+
+    public abstract UserPriceDao userPriceDao();
+
+    public abstract OpenQuestionDao openQuestionDao();
+
+    public abstract MultipleQuestionDao multipleQuestionDao();
+
+    public abstract ChoiceQuestionDao choiceQuestionDao();
+
+    public abstract MultipleChoiceDao multipleChoiceDao();
+
+    public abstract SimpleChoiceDao simpleChoiceDao();
+
+    public abstract CareerDao careerDao();
+
+    public abstract SimpleAnswerDao simpleAnswerDao();
+
+    public abstract MultipleAnswerDao multipleAnswerDao();
+
+    public abstract CategoryDao categoryDao();
+
+    public abstract OpenAnswerDao openAnswerDao();
 }

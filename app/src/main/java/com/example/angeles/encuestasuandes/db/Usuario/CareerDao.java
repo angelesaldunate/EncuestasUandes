@@ -14,6 +14,7 @@ import java.util.List;
 public interface CareerDao {
     @Query("SELECT * FROM career")
     List<Career> getAllProfile();
+
     @Query("SELECT * FROM career WHERE career_id=:careerID LIMIT 1")
     Career getOneCareer(int careerID);
 
@@ -26,6 +27,7 @@ public interface CareerDao {
 
     @Update
     void update(Career career);
+
     @Query("SELECT * FROM career WHERE name=:name LIMIT 1")
     Career getOneCareerbyName(String name);
 

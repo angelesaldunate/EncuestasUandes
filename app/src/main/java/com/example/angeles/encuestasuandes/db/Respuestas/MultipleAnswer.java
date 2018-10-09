@@ -38,7 +38,6 @@ public class MultipleAnswer {
     }
 
 
-
     public int getMultipleChoiceId() {
         return multipleChoiceId;
     }
@@ -55,9 +54,6 @@ public class MultipleAnswer {
     public void setMultiple_answer_id(int multiple_answer_id) {
         this.multiple_answer_id = multiple_answer_id;
     }
-
-
-
 
 
 }

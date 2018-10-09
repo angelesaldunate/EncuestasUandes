@@ -79,7 +79,7 @@ public class EncuestasAdapter extends ArrayAdapter<Encuesta> {
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)  {
+    public View getView(int position, View convertView, ViewGroup parent) {
         // Get the data item for this position
         ViewHolder holder = null;
         final Encuesta encuesta = getItem(position);
@@ -118,10 +118,10 @@ public class EncuestasAdapter extends ArrayAdapter<Encuesta> {
                         scoreEncuesta.setText(Integer.toString(encuesta.getScore()));
 
 
-
                     }
                 });
-            }}).start();
+            }
+        }).start();
 
         // Return the completed view to render on screen
         return convertView;
@@ -137,7 +137,7 @@ public class EncuestasAdapter extends ArrayAdapter<Encuesta> {
 
         }
 
-        public void updateTimer(long currentTime)  {
+        public void updateTimer(long currentTime) {
             String secs = new Timestamp(System.currentTimeMillis()).toString();
 
 
@@ -152,7 +152,8 @@ public class EncuestasAdapter extends ArrayAdapter<Encuesta> {
                 tvTimer.setText("Expirado!!");
             }
         }
-        public int difference (String date2, String current) {
+
+        public int difference(String date2, String current) {
             Calendar cal1 = new GregorianCalendar();
             Calendar cal2 = new GregorianCalendar();
 
@@ -162,17 +163,17 @@ public class EncuestasAdapter extends ArrayAdapter<Encuesta> {
             try {
                 Date date = sdf.parse(current);
                 cal1.setTime(date);
-                date =  sdf.parse(date2);
+                date = sdf.parse(date2);
                 cal2.setTime(date);
             } catch (ParseException e) {              // Insert this block.
                 e.printStackTrace();
             }
 
 
-            Date d1,d2;
-            d1=cal1.getTime();
-            d2=cal2.getTime();
-            int frequency =(int)(TimeUnit.DAYS.convert(d2.getTime() - d1.getTime(), TimeUnit.MILLISECONDS));
+            Date d1, d2;
+            d1 = cal1.getTime();
+            d2 = cal2.getTime();
+            int frequency = (int) (TimeUnit.DAYS.convert(d2.getTime() - d1.getTime(), TimeUnit.MILLISECONDS));
             return frequency;
         }
 

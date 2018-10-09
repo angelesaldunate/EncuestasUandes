@@ -23,9 +23,9 @@ public interface CategoryDao {
     Category getCategorybyId(int categoryId);
 
 
-
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(Category... categories);
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insert(Category category);
 

@@ -28,18 +28,19 @@ import java.util.List;
  */
 public class SimpleChQFragment extends Fragment {
     private static AppDatabase appDatabase;
-    private iComunicator mListener;
-    private CredentialManage credentialManager;
     ArrayList<Integer> cantidad_p_multiple;
     ArrayList<Integer> cantidad_p_abierta;
     ArrayList<Integer> cantidad_p_alternativa;
     int id_actual;
     int encuesta_id;
+    private iComunicator mListener;
+    private CredentialManage credentialManager;
 
 
     public SimpleChQFragment() {
         // Required empty public constructor
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +55,7 @@ public class SimpleChQFragment extends Fragment {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_simple_ch_q, container, false);
     }
+
     @Override
     public void onViewCreated(final View view, Bundle savedInstanceState) {
         Bundle bundle = this.getArguments();
@@ -72,44 +74,40 @@ public class SimpleChQFragment extends Fragment {
                 final String enunciado_str = appDatabase.choiceQuestionDao().getOneChoiceQuestion(id_actual).getEnunciado();
                 Handler mainHandler = new Handler(getActivity().getMainLooper());
                 mainHandler.post(new Runnable() {
-                                     @Override
-                                     public void run() {
-                                         TextView enunciado = (TextView) view.findViewById(R.id.enunciado_pregunta);
-                                         enunciado.setText(enunciado_str);
-                                         LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.linear_preguntas);
-                                         for (int i = 0; i < indices.size(); i++){
+                    @Override
+                    public void run() {
+                        TextView enunciado = (TextView) view.findViewById(R.id.enunciado_pregunta);
+                        enunciado.setText(enunciado_str);
+                        LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.linear_preguntas);
+                        for (int i = 0; i < indices.size(); i++) {
 
-                                             generateAlternative(indices.get(i),contents.get(i));
+                            generateAlternative(indices.get(i), contents.get(i));
 
-                                         }
+                        }
 
-                                         for (int i = 0; i < linearLayout.getChildCount(); i++) {
-                                             final TextView children = (TextView) linearLayout.getChildAt(i);
-                                             children.setOnClickListener(new View.OnClickListener() {
-                                                 @Override
-                                                 public void onClick(View v) {
+                        for (int i = 0; i < linearLayout.getChildCount(); i++) {
+                            final TextView children = (TextView) linearLayout.getChildAt(i);
+                            children.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
 
-                                                     GetOtherQ(cantidad_p_abierta,cantidad_p_multiple,cantidad_p_alternativa,encuesta_id, children.getId());
-
-
-                                                 }
-                                             });
-                                         }
-
-                                     }
-                                 });
+                                    GetOtherQ(cantidad_p_abierta, cantidad_p_multiple, cantidad_p_alternativa, encuesta_id, children.getId());
 
 
+                                }
+                            });
+                        }
+
+                    }
+                });
 
 
             }
         }).start();
 
 
-
-
-
     }
+
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -123,7 +121,8 @@ public class SimpleChQFragment extends Fragment {
         super.onDetach();
         mListener = null;
     }
-    public void GetOtherQ(ArrayList<Integer> all_index_open, ArrayList<Integer> all_index_multiple, ArrayList<Integer> all_index_choice, int id_encuesta, final int ide_view){
+
+    public void GetOtherQ(ArrayList<Integer> all_index_open, ArrayList<Integer> all_index_multiple, ArrayList<Integer> all_index_choice, int id_encuesta, final int ide_view) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -138,62 +137,61 @@ public class SimpleChQFragment extends Fragment {
         }).start();
 
 
-
-        if (cantidad_p_multiple.size()==0 && cantidad_p_abierta.size()==0 && cantidad_p_alternativa.size()==0){
-            Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta",Toast.LENGTH_SHORT );
+        if (cantidad_p_multiple.size() == 0 && cantidad_p_abierta.size() == 0 && cantidad_p_alternativa.size() == 0) {
+            Toast toast = Toast.makeText(getContext(), "Se ha respondido toda la Encuesta", Toast.LENGTH_SHORT);
             toast.show();
             Fragment fr = new AllEncuestasFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
-        }else{
-        Bundle bund = new Bundle();
-        Fragment fragment;
-        if (all_index_open.size()>0){
+        } else {
+            Bundle bund = new Bundle();
+            Fragment fragment;
+            if (all_index_open.size() > 0) {
 
-            fragment = new OpenQFragment();
-            bund.putInt("encuesta_id", id_encuesta);
-            int primer_index = all_index_open.get(0);
-            bund.putInt("id_actual", primer_index);
-            all_index_open.remove(0);
-            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
-            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
-            fragment.setArguments(bund);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+                fragment = new OpenQFragment();
+                bund.putInt("encuesta_id", id_encuesta);
+                int primer_index = all_index_open.get(0);
+                bund.putInt("id_actual", primer_index);
+                all_index_open.remove(0);
+                bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
+                bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
+                fragment.setArguments(bund);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
-        }else if(all_index_choice.size()>0){
+            } else if (all_index_choice.size() > 0) {
 
-            fragment = new SimpleChQFragment();
-            bund.putInt("encuesta_id", id_encuesta);
-            int primer_index = all_index_choice.get(0);
-            bund.putInt("id_actual", primer_index);
-            all_index_choice.remove(0);
-            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
-            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
-            fragment.setArguments(bund);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+                fragment = new SimpleChQFragment();
+                bund.putInt("encuesta_id", id_encuesta);
+                int primer_index = all_index_choice.get(0);
+                bund.putInt("id_actual", primer_index);
+                all_index_choice.remove(0);
+                bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
+                bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
+                fragment.setArguments(bund);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
 
 
+            } else if (all_index_multiple.size() > 0) {
+                fragment = new MultipleQFragment();
+                bund.putInt("encuesta_id", id_encuesta);
+                int primer_index = all_index_multiple.get(0);
+                bund.putInt("id_actual", primer_index);
+                all_index_multiple.remove(0);
+                bund.putIntegerArrayList("cantidad_Pmultiple", all_index_multiple);
+                bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
+                bund.putIntegerArrayList("cantidad_Palternativa", all_index_choice);
+                fragment.setArguments(bund);
+                getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+
+
+            }
         }
-        else if(all_index_multiple.size()>0){
-            fragment = new MultipleQFragment();
-            bund.putInt("encuesta_id", id_encuesta);
-            int primer_index = all_index_multiple.get(0);
-            bund.putInt("id_actual", primer_index);
-            all_index_multiple.remove(0);
-            bund.putIntegerArrayList("cantidad_Pmultiple",all_index_multiple);
-            bund.putIntegerArrayList("cantidad_Pabierta", all_index_open);
-            bund.putIntegerArrayList("cantidad_Palternativa",all_index_choice );
-            fragment.setArguments(bund);
-            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
-
-
-        }}
     }
 
-    public void generateAlternative(int index, String content){
+    public void generateAlternative(int index, String content) {
         LinearLayout linearLayout = (LinearLayout) getActivity().findViewById(R.id.linear_preguntas);
-        TextView  alternativa = new TextView(getContext());
+        TextView alternativa = new TextView(getContext());
         int ide_question = index;
         alternativa.setId(ide_question);
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
@@ -203,7 +201,7 @@ public class SimpleChQFragment extends Fragment {
                 5,
                 getResources().getDisplayMetrics()
         );
-        layoutParams.setMargins(px,px,px,px);
+        layoutParams.setMargins(px, px, px, px);
         int padding = (int) TypedValue.applyDimension(
                 TypedValue.COMPLEX_UNIT_DIP,
                 20,
@@ -219,7 +217,7 @@ public class SimpleChQFragment extends Fragment {
         alternativa.setBackgroundColor(getResources().getColor(R.color.colorwhite));
         alternativa.setClickable(true);
         alternativa.setElevation(elevation);
-        alternativa.setPadding(padding ,padding,padding,padding);
+        alternativa.setPadding(padding, padding, padding, padding);
         alternativa.setText(content);
         linearLayout.addView(alternativa);
 

@@ -43,7 +43,6 @@ public class MultipleChoice {
     }
 
 
-
     public int getMultipleQId() {
         return multipleQId;
     }

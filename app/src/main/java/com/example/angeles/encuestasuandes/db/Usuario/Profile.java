@@ -23,14 +23,35 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 onDelete = CASCADE)})
 public class Profile {
 
-    @PrimaryKey (autoGenerate = true)
+    @PrimaryKey(autoGenerate = true)
     private int prid;
 
     @ColumnInfo(name = "name")
     private String name;
-
-
     private int career_id;
+    @ColumnInfo(name = "last_name")
+    private String last_name;
+    @ColumnInfo(name = "rut")
+    private String rut;
+    @ColumnInfo(name = "gender")
+    private String gender;
+    @ColumnInfo(name = "birthdate")
+    private String birthdate;
+    private int userId;
+
+    public Profile(String name, int career_id, String last_name, String rut,
+                   String gender, String birthdate, int userId) {
+        this.name = name;
+        this.career_id = career_id;
+        this.last_name = last_name;
+        this.rut = rut;
+        this.gender = gender;
+        this.birthdate = birthdate;
+        this.userId = userId;
+    }
+
+    public Profile() {
+    }
 
     public int getCareer_id() {
         return career_id;
@@ -39,8 +60,6 @@ public class Profile {
     public void setCareer_id(int career_id) {
         this.career_id = career_id;
     }
-
-
 
     public String getLast_name() {
         return last_name;
@@ -74,21 +93,6 @@ public class Profile {
         this.birthdate = birthdate;
     }
 
-
-    @ColumnInfo(name = "last_name")
-    private String last_name;
-
-    @ColumnInfo(name = "rut")
-    private String rut;
-
-    @ColumnInfo(name = "gender")
-    private String gender;
-
-    @ColumnInfo(name = "birthdate")
-    private String birthdate;
-
-
-
     public int getUserId() {
         return userId;
     }
@@ -96,12 +100,6 @@ public class Profile {
     public void setUserId(int userId) {
         this.userId = userId;
     }
-
-    private int userId;
-
-
-
-
 
     public int getPrid() {
         return prid;
@@ -119,6 +117,5 @@ public class Profile {
     public void setName(String name) {
         this.name = name;
     }
-
 
 }
