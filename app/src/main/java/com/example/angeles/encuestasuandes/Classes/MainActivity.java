@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -20,7 +19,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
-import android.widget.ThemedSpinnerAdapter;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,7 +33,6 @@ import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
 import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
-import com.example.angeles.encuestasuandes.db.Usuario.Career;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 import com.google.gson.JsonArray;
@@ -49,8 +46,6 @@ import java.util.Calendar;
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 import java.sql.Timestamp;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
@@ -156,9 +151,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     sm2.setChoiceQId(ch2.get(0));
                     sm2.setContent("Chaooo");
                     appDatabase.simpleChoiceDao().insertAll(sm2);
-                    Career cr = new Career();
-                    cr.setName("ING");
-                    appDatabase.careerDao().insertAll(cr);
+
 
                     OpenQuestion oq = new OpenQuestion();
                     oq.setEId(oth.getEnid());
@@ -263,7 +256,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     JSONObject profile_json_object = response.optJSONObject("profile_info");
                                     String first_name;
                                     String last_name;
-                                    int career;
+                                    String career;
                                     String rut;
                                     String gender;
                                     String birthdate;
@@ -271,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     try {
                                         first_name = profile_json_object.getString("first_name");
                                         last_name = profile_json_object.getString("last_name");
-                                        career = profile_json_object.getInt("career_id");
+                                        career = profile_json_object.getString("career_id");
                                         rut = profile_json_object.getString("rut");
                                         gender = profile_json_object.getString("gender");
                                         birthdate = profile_json_object.getString("birthdate");
@@ -286,6 +279,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         };
                                         t.start();
                                         setNameOnHeader(profile.getName());
+                                        setScoreOnHeader(profile.getAccumulated_score());
 
                                     } catch (JSONException e) {
                                         e.printStackTrace();
@@ -305,6 +299,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             int aux = current.getUid();
                             Profile actual_profile = appDatabase.profileDao().getOneProfile(aux);
                             setNameOnHeader(actual_profile.getName());
+
                         }
                         appDatabase.encuestaDao().deleteAll();
                         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
@@ -384,6 +379,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         View headerView = (navigationView.getHeaderView(0));
         TextView textviewnombre = headerView.findViewById(R.id.nav_name);
         textviewnombre.setText(name);
+    }
+    public void setScoreOnHeader(int score){
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textviewnombre = headerView.findViewById(R.id.nav_score);
+        textviewnombre.setText(Integer.toString(score));
+
     }
 
     @Override

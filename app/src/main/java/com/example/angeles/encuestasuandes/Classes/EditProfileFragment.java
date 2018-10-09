@@ -118,32 +118,6 @@ public class EditProfileFragment extends Fragment {
 
 
                             mListener.updateProfile(perfil);
-                        } else {
-                            Profile perfiln = new Profile();
-                            String[] parts = name.getText().toString().split(" ");
-
-                            if (parts.length > 1) {
-                                perfiln.setName(parts[0]);
-                                String last_name = parts[1];
-                                perfiln.setLast_name(last_name);
-
-                            } else {
-                                perfiln.setName(parts[0]);
-                                perfiln.setLast_name(" ");
-                            }
-                            boolean checked2 = ((RadioButton) getView().findViewById(R.id.radioButton_female)).isChecked();
-                            if (checked2) {
-                                perfiln.setGender("Femenino");
-                            } else {
-                                perfiln.setGender("Masculino");
-                            }
-                            perfiln.setCareer_id(appDatabase.careerDao().getOneCareerbyName("ING").getCareer_id());
-
-                            perfiln.setUserId(current.getUid());
-                            perfiln.setRut(rut.getText().toString());
-                            perfiln.setBirthdate(fecha.getText().toString());
-                            appDatabase.profileDao().insertAll(perfiln);
-
                         }
                         Fragment fr = new ProfileFragment();
                         getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
