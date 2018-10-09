@@ -39,6 +39,16 @@ public class Encuesta {
     @ColumnInfo(name = "min_responses")
     private int min_responses;
 
+    public Encuesta(String name, String description, int score, String start_date, String end_date, int max_responses, int min_responses) {
+        this.name = name;
+        this.description = description;
+        this.score = score;
+        this.start_date = start_date;
+        this.end_date = end_date;
+        this.max_responses = max_responses;
+        this.min_responses = min_responses;
+    }
+    public Encuesta(){}
 
     public int getEnid() {
         return enid;
