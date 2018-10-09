@@ -264,6 +264,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     String rut;
                                     String gender;
                                     String birthdate;
+                                    int acc_score;
                                     try {
                                         first_name = profile_json_object.getString("first_name");
                                         last_name = profile_json_object.getString("last_name");
@@ -271,8 +272,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         rut = profile_json_object.getString("rut");
                                         gender = profile_json_object.getString("gender");
                                         birthdate = profile_json_object.getString("birthdate");
+                                        acc_score = profile_json_object.getInt("accumulated_score");
                                         Profile profile = new Profile(first_name, career, last_name,
-                                                rut, gender, birthdate, ide);
+                                                rut, gender, birthdate, ide, acc_score);
                                         Thread t = new Thread() {
                                             @Override
                                             public void run() {
@@ -280,6 +282,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             }
                                         };
                                         t.start();
+                                        setNameOnHeader(profile.getName());
+
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
