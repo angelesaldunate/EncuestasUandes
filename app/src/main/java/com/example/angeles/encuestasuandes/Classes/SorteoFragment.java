@@ -13,16 +13,26 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
+import com.example.angeles.encuestasuandes.db.GrupoUsuario.Category;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Premio.UserPrice;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -37,6 +47,7 @@ public class SorteoFragment extends Fragment {
     private CredentialManage credentialManager;
     private List<Encuesta> filtered_encuestas;
 
+    private NetworkManager networkManager;
 
     public SorteoFragment() {
         // Required empty public constructor
@@ -47,6 +58,7 @@ public class SorteoFragment extends Fragment {
         super.onCreate(savedInstanceState);
         credentialManager = mListener.getCredentialManage();
         appDatabase = mListener.getDb();
+        networkManager = NetworkManager.getInstance(getContext());
     }
 
     @Override
@@ -64,25 +76,35 @@ public class SorteoFragment extends Fragment {
         final TextView price_name = (TextView) view.findViewById(R.id.nombre_premio);
         final TextView days = (TextView) view.findViewById(R.id.dias);
 
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SystemClock.sleep(1000);
-                boolean is = true;
-                final User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
 
-                all = appDatabase.priceDao().getAllPrice(is);
-                UserPrice selected = appDatabase.userPriceDao().getOneUserPrice(current.getUid());
+        networkManager.getPrizes(new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+
+                JSONArray prizes_json_array = response.optJSONArray("prizes");
+                Gson gson = new Gson();
+                Price[] categories = gson.fromJson(prizes_json_array.toString(),Price[].class);
+                all = Arrays.asList(categories);
+                Price selected_ = null;
+                for (int i = 0; i<categories.length ; i++){
+
+                    if (categories[i].isSelected()){
+
+                        selected_ = categories[i];
+                    }
+
+                }
+
+                final Price selected = selected_;
                 if (selected != null) {
 
-                    final Price last_selected = appDatabase.priceDao().getPricebyId(selected.getPriceId());
                     String secs = new Timestamp(System.currentTimeMillis()).toString();
-                    final int timeDiff = difference(last_selected.getEnd_date(), secs);
+                    final int timeDiff = difference(selected.getEnd_date(), secs);
                     Handler mainHandler = new Handler(getActivity().getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            price_name.setText(last_selected.getName());
+                            price_name.setText(selected.getName());
                             days.setText(Integer.toString(timeDiff));
                         }
                     });
@@ -98,54 +120,133 @@ public class SorteoFragment extends Fragment {
                     });
 
                 }
-
-                Handler mainHandler = new Handler(getActivity().getMainLooper());
-                mainHandler.post(new Runnable() {
+                //llenando la lista
+                final PriceAdapter adapter = new PriceAdapter(getContext(), all);
+                lv.setAdapter(adapter);
+                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
-                    public void run() {
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                        final Price price = adapter.getItem(i);
+                        if (price!=selected) {
 
-                        //llenando la lista
-                        final PriceAdapter adapter = new PriceAdapter(getContext(), all);
-                        lv.setAdapter(adapter);
-                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                            @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                                final Price price = adapter.getItem(i);
-
-                                new Thread(new Runnable() {
+                            try {
+                                networkManager.updatePrize(new Response.Listener<JSONObject>() {
                                     @Override
-                                    public void run() {
+                                    public void onResponse(JSONObject response) {
 
 
-                                        UserPrice newprice = new UserPrice();
-                                        UserPrice oldprice = appDatabase.userPriceDao().getUserPriceByUserId(current.getUid());
-                                        if (oldprice != null) {
-                                            oldprice.setPriceId(price.getPrice_id());
-                                            appDatabase.userPriceDao().update(oldprice);
-                                            Fragment fm = new SorteoFragment();
-                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fm).addToBackStack("null").commit();
-
-                                        } else {
-
-                                            newprice.setPriceId(price.getPrice_id());
-                                            newprice.setUserId(current.getUid());
-                                            appDatabase.userPriceDao().insertAll(newprice);
-
-                                            Fragment fm = new SorteoFragment();
-                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fm).addToBackStack("null").commit();
-                                        }
+                                        Fragment fm = new SorteoFragment();
+                                        getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fm).addToBackStack("null").commit();
 
                                     }
-                                }).start();
+                                }, new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError error) {
 
+                                    }
+                                }, price);
+                            } catch (JSONException e) {
+
+                                e.printStackTrace();
                             }
-                        });
+
+
+                        }
+
 
                     }
                 });
 
             }
-        }).start();
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+//        new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                SystemClock.sleep(1000);
+//
+//                boolean is = true;
+//                final User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
+//
+//                all = appDatabase.priceDao().getAllPrice(is);
+//                UserPrice selected = appDatabase.userPriceDao().getOneUserPrice(current.getUid());
+//                if (selected != null) {
+//
+//                    final Price last_selected = appDatabase.priceDao().getPricebyId(selected.getPriceId());
+//                    String secs = new Timestamp(System.currentTimeMillis()).toString();
+//                    final int timeDiff = difference(last_selected.getEnd_date(), secs);
+//                    Handler mainHandler = new Handler(getActivity().getMainLooper());
+//                    mainHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            price_name.setText(last_selected.getName());
+//                            days.setText(Integer.toString(timeDiff));
+//                        }
+//                    });
+//                } else {
+//                    String secs = new Timestamp(System.currentTimeMillis()).toString();
+//                    final int timeDiff = difference(all.get(0).getEnd_date(), secs);
+//                    Handler mainHandler = new Handler(getActivity().getMainLooper());
+//                    mainHandler.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            days.setText(Integer.toString(timeDiff));
+//                        }
+//                    });
+//
+//                }
+//
+//                Handler mainHandler = new Handler(getActivity().getMainLooper());
+//                mainHandler.post(new Runnable() {
+//                    @Override
+//                    public void run() {
+//
+//                        //llenando la lista
+//                        final PriceAdapter adapter = new PriceAdapter(getContext(), all);
+//                        lv.setAdapter(adapter);
+//                        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                            @Override
+//                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+//                                final Price price = adapter.getItem(i);
+//
+//                                new Thread(new Runnable() {
+//                                    @Override
+//                                    public void run() {
+//
+//
+//                                        UserPrice newprice = new UserPrice();
+//                                        UserPrice oldprice = appDatabase.userPriceDao().getUserPriceByUserId(current.getUid());
+//                                        if (oldprice != null) {
+//                                            oldprice.setPriceId(price.getPrice_id());
+//                                            appDatabase.userPriceDao().update(oldprice);
+//                                            Fragment fm = new SorteoFragment();
+//                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fm).addToBackStack("null").commit();
+//
+//                                        } else {
+//
+//                                            newprice.setPriceId(price.getPrice_id());
+//                                            newprice.setUserId(current.getUid());
+//                                            appDatabase.userPriceDao().insertAll(newprice);
+//
+//                                            Fragment fm = new SorteoFragment();
+//                                            getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fm).addToBackStack("null").commit();
+//                                        }
+//
+//                                    }
+//                                }).start();
+//
+//                            }
+//                        });
+//
+//                    }
+//                });
+//
+//            }
+//        }).start();
 
 
     }

@@ -9,15 +9,38 @@ import android.arch.persistence.room.PrimaryKey;
  */
 @Entity
 public class Price {
+    @ColumnInfo(name = "price_id")
     @PrimaryKey(autoGenerate = true)
     private int price_id;
     @ColumnInfo(name = "name")
     private String name;
     @ColumnInfo(name = "description")
     private String description;
-    @ColumnInfo(name = "endDate")
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    @ColumnInfo(name = "selected")
+    private boolean selected;
+    @ColumnInfo(name = "end_date")
     private String end_date;
+    @ColumnInfo(name = "is_available")
     private boolean is_available;
+
+    public Price(int price_id, String name, String description, boolean selected, String end_date, boolean is_available) {
+        this.price_id = price_id;
+        this.name = name;
+        this.description = description;
+        this.selected = selected;
+        this.end_date = end_date;
+        this.is_available = is_available;
+    }
+
 
     public int getPrice_id() {
         return price_id;

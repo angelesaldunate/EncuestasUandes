@@ -12,6 +12,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.angeles.encuestasuandes.Classes.CredentialManage;
+import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 
 import org.json.JSONArray;
@@ -124,6 +125,8 @@ public class NetworkManager implements Executor {
         makeApiCall(Request.Method.POST, url, obj, listener, errorListener);
     }
 
+
+
     public void getDesks(Response.Listener<JSONObject> listener,
                          Response.ErrorListener errorListener) {
 
@@ -148,6 +151,17 @@ public class NetworkManager implements Executor {
                                            Response.ErrorListener errorListener, JSONObject payload) {
 
         String url = BASE_URL + "interest_categories/edit";
+        makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
+    }
+
+
+    public void updatePrize(Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener, Price p) throws JSONException{
+
+
+        JSONObject payload = new JSONObject();
+        payload.put("id",p.getPrice_id());
+        String url = BASE_URL + "app_calls/add_prize.json";
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
     }
 
@@ -197,6 +211,14 @@ public class NetworkManager implements Executor {
         String url = BASE_URL + "app_calls/get_profile_info.json";
         makeApiCall(Request.Method.GET, url, null, listener, errorListener);
     }
+
+
+    public void getPrizes(Response.Listener<JSONObject> listener,
+                           Response.ErrorListener errorListener) {
+        String url = BASE_URL + "app_calls/get_prizes.json";
+        makeApiCall(Request.Method.GET, url, null, listener, errorListener);
+    }
+
 
     public void getSurveys(Response.Listener<JSONObject> listener,
                            Response.ErrorListener errorListener) {

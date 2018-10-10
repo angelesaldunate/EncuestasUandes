@@ -16,7 +16,7 @@ public interface PriceDao {
     @Query("SELECT * FROM price WHERE is_available=:is_true")
     List<Price> getAllPrice(boolean is_true);
 
-    @Query("SELECT * FROM price WHERE is_available=:is_true and endDate=:date")
+    @Query("SELECT * FROM price WHERE is_available=:is_true and end_date=:date")
     List<Price> getPriceGivenADate(boolean is_true, String date);
 
     @Query("SELECT * FROM price WHERE price_id=:priceIde")
