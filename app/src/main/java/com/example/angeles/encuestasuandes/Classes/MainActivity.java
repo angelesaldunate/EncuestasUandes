@@ -285,6 +285,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                         career = profile_json_object.getString("career_id");
                                         rut = profile_json_object.getString("rut");
                                         gender = profile_json_object.getString("gender");
+                                        if (gender == "male") gender = "Masculino";
+                                        else if (gender == "female") gender = "Femenino";
+                                        else gender = "Sin asignar";
                                         birthdate = profile_json_object.getString("birthdate");
                                         acc_score = profile_json_object.getInt("accumulated_score");
                                         Profile profile = new Profile(first_name, career, last_name,

@@ -101,11 +101,6 @@ public class EditProfileFragment extends Fragment  implements DatePickerDialog.O
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
-                            current_profile.setGender(null);
-                            current_profile.setBirthdate(null);
-                            current_profile.setName(null);
-                            current_profile.setLast_name(null);
-                            current_profile.setRut(null);
 
                             String without_field = "Sin asignar";
 
@@ -189,14 +184,9 @@ public class EditProfileFragment extends Fragment  implements DatePickerDialog.O
                             perfil.setBirthdate(fecha.getText().toString());
                             boolean checked2 = ((RadioButton) getView().findViewById(R.id.radioButton_female)).isChecked();
                             boolean checked1 =  ((RadioButton) getView().findViewById(R.id.radioButton_male)).isChecked();
-                            if (checked2) {
-                                perfil.setGender("Femenino");
-                            } else if (checked1) {
-                                perfil.setGender("Masculino");
-                            }else{
-                                perfil.setGender("Sin asignar");
-
-                            }
+                            if (checked2) perfil.setGender("Femenino");
+                            else if (checked1) perfil.setGender("Masculino");
+                            else perfil.setGender("Sin asignar");
 
                             mListener.updateProfile(perfil);
                         }
