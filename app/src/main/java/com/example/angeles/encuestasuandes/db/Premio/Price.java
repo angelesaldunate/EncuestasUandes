@@ -10,7 +10,7 @@ import android.arch.persistence.room.PrimaryKey;
 @Entity
 public class Price {
     @ColumnInfo(name = "price_id")
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int price_id;
     @ColumnInfo(name = "name")
     private String name;

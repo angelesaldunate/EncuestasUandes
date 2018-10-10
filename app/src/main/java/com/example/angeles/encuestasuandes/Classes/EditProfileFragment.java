@@ -186,7 +186,7 @@ public class EditProfileFragment extends Fragment  implements DatePickerDialog.O
                             boolean checked1 =  ((RadioButton) getView().findViewById(R.id.radioButton_male)).isChecked();
                             if (checked2) perfil.setGender("Femenino");
                             else if (checked1) perfil.setGender("Masculino");
-                            else perfil.setGender("Sin asignar");
+                            else perfil.setGender("");
 
                             mListener.updateProfile(perfil);
                         }

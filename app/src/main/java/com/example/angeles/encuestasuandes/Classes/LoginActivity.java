@@ -132,7 +132,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     showProgress(false);
-                    Toast.makeText(getApplicationContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
+                    if(error.networkResponse.statusCode ==HttpURLConnection.HTTP_UNAUTHORIZED){
+                        Toast.makeText(getApplicationContext(), "Credenciales inválidas", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                    Toast.makeText(getApplicationContext(), "Error de conexión", Toast.LENGTH_SHORT).show();}
                 }
             });
         } catch (JSONException e) {

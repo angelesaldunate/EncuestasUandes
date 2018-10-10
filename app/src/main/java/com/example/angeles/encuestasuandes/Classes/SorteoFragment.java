@@ -115,6 +115,8 @@ public class SorteoFragment extends Fragment {
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
+
+                            price_name.setText("Ninguno");
                             days.setText(Integer.toString(timeDiff));
                         }
                     });
@@ -271,11 +273,13 @@ public class SorteoFragment extends Fragment {
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
         sdf.setTimeZone(TimeZone.getTimeZone("GMT"));
         try {
             Date date = sdf.parse(current);
             cal1.setTime(date);
-            date = sdf.parse(date2);
+            date = sdf2.parse(date2);
             cal2.setTime(date);
         } catch (ParseException e) {              // Insert this block.
             e.printStackTrace();
