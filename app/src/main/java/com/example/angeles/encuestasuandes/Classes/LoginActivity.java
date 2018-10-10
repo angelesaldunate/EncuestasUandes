@@ -98,15 +98,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void attemptLogin() {
-
-
+        CredentialManage credentialManage = CredentialManage.getInstance(this);
+        String firebase_token  = credentialManage.getFirebaseToken();
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         showProgress(true);
 
         try {
-            networkManager.login(email, password, new Response.Listener<JSONObject>() {
+            networkManager.login(email, password, firebase_token,new Response.Listener<JSONObject>() {
                 @Override
                 public void onResponse(JSONObject response) {
                     int status = response.optInt("status");
@@ -132,7 +132,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     showProgress(false);
-                    Toast.makeText(getApplicationContext(), "Error de conexion", Toast.LENGTH_SHORT);
+                    Toast.makeText(getApplicationContext(), "Error de conexión", Toast.LENGTH_SHORT).show();
                 }
             });
         } catch (JSONException e) {

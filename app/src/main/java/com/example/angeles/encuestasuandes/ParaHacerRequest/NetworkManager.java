@@ -25,11 +25,12 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class NetworkManager implements Executor {
-    public static final String BASE_URL = "http://167.99.236.252/";
+    public static final String BASE_URL = "http://192.168.0.27:3000/";
     private static NetworkManager mInstance;
     private static Context mCtx;
     private static String token = "";
     private RequestQueue mRequestQueue;
+
 
     private NetworkManager(Context context) {
         mCtx = context;
@@ -64,7 +65,7 @@ public class NetworkManager implements Executor {
         System.out.print(this.token);
     }
 
-    public void login(String email, String password, final Response.Listener<JSONObject> responseListener,
+    public void login(String email, String password, String firebase_token, final Response.Listener<JSONObject> responseListener,
                       Response.ErrorListener errorListener) throws JSONException {
 
         String url = BASE_URL + "/users/sign_in.json";
@@ -72,7 +73,7 @@ public class NetworkManager implements Executor {
         JSONObject payload = new JSONObject();
         payload.put("email", email);
         payload.put("password", password);
-
+        payload.put("firebase_token",firebase_token);
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest
                 (Request.Method.POST, url, payload, new Response.Listener<JSONObject>() {
@@ -150,11 +151,32 @@ public class NetworkManager implements Executor {
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
     }
 
+
+    public void updateProfile(Response.Listener<JSONObject> listener,
+                                           Response.ErrorListener errorListener, Profile profile) {
+
+        String url = BASE_URL + "app_calls/update_profile_info";
+        JSONObject payload = new JSONObject();
+        try {
+            JSONObject user_hash = new JSONObject();
+            user_hash.put("first_name", profile.getName());
+            user_hash.put("last_name", profile.getLast_name());
+            user_hash.put("rut", profile.getRut());
+            user_hash.put("gender", profile.getGender());
+            user_hash.put("birthdate", profile.getBirthdate());
+            payload.put("user", user_hash);
+
+            makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
     public void updateAnswers(Response.Listener<JSONObject> listener,
                               Response.ErrorListener errorListener, JSONObject payload) {
 
         String url = BASE_URL + "app_calls/post_survey.json";
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
+
     }
 
     public void activateEmail(Response.Listener<JSONObject> listener,

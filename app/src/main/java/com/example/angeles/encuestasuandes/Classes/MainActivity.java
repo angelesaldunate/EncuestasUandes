@@ -1,5 +1,6 @@
 package com.example.angeles.encuestasuandes.Classes;
 
+import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
@@ -7,6 +8,12 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
+
+import android.support.v4.app.Fragment;
+import android.text.format.DateFormat;
+import android.util.Log;
+import android.view.View;
+
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
@@ -20,6 +27,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -35,10 +43,16 @@ import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
+import com.google.firebase.FirebaseApp;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.net.HttpURLConnection;
+import java.util.Calendar;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -61,9 +75,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     ArrayList<Integer> respuestas_simple = new ArrayList<>();
     private NetworkManager networkManager;
 
+    Handler handler = new Handler();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FirebaseApp.initializeApp(this);
         setContentView(R.layout.activity_main);
 
         appDatabase = Room.databaseBuilder(this, AppDatabase.class, DATABASE_NAME).fallbackToDestructiveMigration().build();
@@ -550,18 +567,55 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         return tstamp.toString();
     }
 
-    public void updateProfile(final Profile perfiln) {
+       public void updateProfile(final Profile perfiln) {
 
 
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                appDatabase.profileDao().update(perfiln);
+
+                networkManager.updateProfile(new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        int status = response.optInt("status");
+
+                        if (status == HttpURLConnection.HTTP_OK){
+
+                            Thread t = new Thread(){
+                                @Override
+                                public void run() {
+
+                                    appDatabase.profileDao().update(perfiln);
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(),"Perfil actualizado",Toast.LENGTH_LONG).show();
+
+                                            Fragment fragment = new ProfileFragment();
+                                            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).commit();
+                                        }
+                                    });
+
+                                }
+                            };
+                            t.start();
+                             }
+                        else{
+                            String message = response.optString("message");
+                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),"Error de conexión",Toast.LENGTH_LONG).show();
+                   }
+                }, perfiln);
 
             }
         }).start();
-        setNameOnHeader(perfiln.getName());
+            setNameOnHeader(perfiln.getName());
 
     }
 
