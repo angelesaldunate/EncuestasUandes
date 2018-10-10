@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,7 +20,6 @@ import com.example.angeles.encuestasuandes.db.Respuestas.OpenAnswer;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class OpenQFragment extends Fragment {
     private static AppDatabase appDatabase;
@@ -136,6 +134,7 @@ public class OpenQFragment extends Fragment {
                 appDatabase.openAnswerDao().insertAll(oa);
             }
         }).start();
+        mListener.addOpen(id_actual, respuesta);
 
 
         if (cantidad_p_multiple.size() == 0 && cantidad_p_abierta.size() == 0 && cantidad_p_alternativa.size() == 0) {

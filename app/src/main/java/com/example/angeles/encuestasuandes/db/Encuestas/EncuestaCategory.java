@@ -4,7 +4,6 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
-
 import com.example.angeles.encuestasuandes.db.GrupoUsuario.Category;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;

@@ -13,7 +13,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.angeles.encuestasuandes.Classes.CredentialManage;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -153,25 +151,32 @@ public class NetworkManager implements Executor {
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
     }
 
+
     public void updateProfile(Response.Listener<JSONObject> listener,
                                            Response.ErrorListener errorListener, Profile profile) {
 
         String url = BASE_URL + "app_calls/update_profile_info";
         JSONObject payload = new JSONObject();
-        try{
+        try {
             JSONObject user_hash = new JSONObject();
-            user_hash.put("first_name",profile.getName());
-            user_hash.put("last_name",profile.getLast_name());
-            user_hash.put("rut",profile.getRut());
-            user_hash.put("gender",profile.getGender());
-            user_hash.put("birthdate",profile.getBirthdate());
-            payload.put("user",user_hash);
+            user_hash.put("first_name", profile.getName());
+            user_hash.put("last_name", profile.getLast_name());
+            user_hash.put("rut", profile.getRut());
+            user_hash.put("gender", profile.getGender());
+            user_hash.put("birthdate", profile.getBirthdate());
+            payload.put("user", user_hash);
 
             makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
-        }
-        catch(JSONException e){
+        } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+    public void updateAnswers(Response.Listener<JSONObject> listener,
+                              Response.ErrorListener errorListener, JSONObject payload) {
+
+        String url = BASE_URL + "app_calls/post_survey.json";
+        makeApiCall(Request.Method.POST, url, payload, listener, errorListener);
+
     }
 
     public void activateEmail(Response.Listener<JSONObject> listener,

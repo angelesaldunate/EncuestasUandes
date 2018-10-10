@@ -23,6 +23,8 @@ public interface MultipleChoiceDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(MultipleChoice... multipleChoices);
+    @Insert
+    void insert(MultipleChoice multipleChoice);
 
 
     @Query("DELETE FROM MultipleChoice")

@@ -4,10 +4,7 @@ package com.example.angeles.encuestasuandes.Classes;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,23 +12,16 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
-import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
 import com.example.angeles.encuestasuandes.db.Respuestas.MultipleAnswer;
-import com.example.angeles.encuestasuandes.db.Respuestas.SimpleAnswer;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 
 public class MultipleQFragment extends Fragment {
@@ -111,9 +101,12 @@ public class MultipleQFragment extends Fragment {
                         final List<Integer> indices = appDatabase.multipleChoiceDao().getAllIdMuChoicebyQuestion(id_actual);
                         User current = appDatabase.userDao().getOneUser(credentialManager.getEmail());
                         int count = 0;
+                        ArrayList<Integer> respuestas = new ArrayList<>();
+
                         for (int i = 0; i < indices.size(); i++) {
                             CheckBox cb = (CheckBox) view.findViewById(indices.get(i));
                             if (cb.isChecked()) {
+                                respuestas.add(indices.get(i));
                                 count += 1;
                                 MultipleAnswer ma = new MultipleAnswer();
                                 ma.setMultipleChoiceId(indices.get(i));
@@ -133,6 +126,8 @@ public class MultipleQFragment extends Fragment {
                                     cb.setError("Necesitas seleccionar al menos uno");
                                     cb.requestFocus();
                                 } else {
+                                    mListener.addMultiple(respuestas);
+
                                     GetOtherQ(cantidad_p_abierta, cantidad_p_multiple, cantidad_p_alternativa, encuesta_id);
 
                                 }
@@ -172,6 +167,8 @@ public class MultipleQFragment extends Fragment {
             toast.show();
             Fragment fr = new AllEncuestasFragment();
             getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fr).addToBackStack("null").commit();
+            mListener.finishEncuesta(id_encuesta);
+
         } else {
             Bundle bund = new Bundle();
             Fragment fragment;

@@ -5,8 +5,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.angeles.encuestasuandes.db.Usuario.User;
-
 import java.util.List;
 
 /**

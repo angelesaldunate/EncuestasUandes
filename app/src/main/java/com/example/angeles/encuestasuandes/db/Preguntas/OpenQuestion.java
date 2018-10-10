@@ -24,6 +24,13 @@ public class OpenQuestion {
     private String enunciado;
     private int eId;
 
+    public OpenQuestion(String enunciado, int eId) {
+        this.enunciado = enunciado;
+        this.eId = eId;
+    }
+
+    public OpenQuestion() {
+    }
 
     public int getEId() {
         return eId;

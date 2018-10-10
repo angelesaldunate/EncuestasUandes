@@ -4,6 +4,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.graphics.Path;
 
 import java.util.List;
 
@@ -27,7 +28,8 @@ public interface OpenQuestionDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(OpenQuestion... openQuestions);
-
+    @Insert
+    void insert(OpenQuestion openQuestion);
 
     @Query("DELETE FROM openquestion")
     void deleteAll();

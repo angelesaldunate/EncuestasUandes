@@ -1,12 +1,10 @@
 package com.example.angeles.encuestasuandes.db.Respuestas;
 
-import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.ForeignKey;
 import android.arch.persistence.room.PrimaryKey;
 
 import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
-import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
 import static android.arch.persistence.room.ForeignKey.CASCADE;

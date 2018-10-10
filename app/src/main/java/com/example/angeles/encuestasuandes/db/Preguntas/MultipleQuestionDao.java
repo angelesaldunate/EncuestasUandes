@@ -27,7 +27,8 @@ public interface MultipleQuestionDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(MultipleQuestion... multipleQuestions);
-
+    @Insert
+    long insert(MultipleQuestion multipleQuestion);
 
     @Query("DELETE FROM multiplequestion")
     void deleteAll();

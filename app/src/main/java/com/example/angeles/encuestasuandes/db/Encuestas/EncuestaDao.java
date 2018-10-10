@@ -27,6 +27,9 @@ public interface EncuestaDao {
     @Insert
     void insertAll(Encuesta... encuestas);
 
+    @Insert
+    void insert(Encuesta encuesta);
+
 
     @Query("DELETE FROM encuesta")
     void deleteAll();
