@@ -543,7 +543,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Toast.makeText(getApplicationContext(),"Error de conexión",Toast.LENGTH_LONG).show();
-                   }
+                        Fragment fragment = new ProfileFragment();
+                        getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).commit();
+
+                    }
                 }, perfiln);
 
             }

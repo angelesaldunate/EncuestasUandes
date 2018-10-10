@@ -99,25 +99,25 @@ public class SorteoFragment extends Fragment {
                 if (selected != null) {
 
                     String secs = new Timestamp(System.currentTimeMillis()).toString();
-                    final int timeDiff = difference(selected.getEnd_date(), secs);
+               //     final int timeDiff = difference(selected.getEnd_date(), secs);
                     Handler mainHandler = new Handler(getActivity().getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             price_name.setText(selected.getName());
-                            days.setText(Integer.toString(timeDiff));
+                            days.setText("");
                         }
                     });
                 } else {
                     String secs = new Timestamp(System.currentTimeMillis()).toString();
-                    final int timeDiff = difference(all.get(0).getEnd_date(), secs);
+                  //  final int timeDiff = difference(all.get(0).getEnd_date(), secs);
                     Handler mainHandler = new Handler(getActivity().getMainLooper());
                     mainHandler.post(new Runnable() {
                         @Override
                         public void run() {
 
                             price_name.setText("Ninguno");
-                            days.setText(Integer.toString(timeDiff));
+                            days.setText("");
                         }
                     });
 
