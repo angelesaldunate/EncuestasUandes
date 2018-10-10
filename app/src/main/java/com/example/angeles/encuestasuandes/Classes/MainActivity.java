@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         credentialManager = new CredentialManage(this);
         networkManager = NetworkManager.getInstance(this);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -286,7 +285,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     } catch (JSONException e) {
                                         e.printStackTrace();
                                     }
-
                                 }
                             };
                             networkManager.getProfile(listener, new Response.ErrorListener() {
@@ -301,7 +299,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             int aux = current.getUid();
                             Profile actual_profile = appDatabase.profileDao().getOneProfile(aux);
                             setNameOnHeader(actual_profile.getName());
-
                         }
                     }
                 }).start();
@@ -316,6 +313,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             @Override
             public void run() {
                 appDatabase.encuestaDao().deleteAll();
+                appDatabase.multipleChoiceDao().deleteAll();
+                appDatabase.multipleQuestionDao().deleteAll();
+                appDatabase.simpleChoiceDao().deleteAll();
+                appDatabase.choiceQuestionDao().deleteAll();
+                appDatabase.openQuestionDao().deleteAll();
                 Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -349,11 +351,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             JSONObject open_question;
                                             String statement;
                                             int survey_id;
+                                            int oq_id;
                                             try {
                                                 open_question = open_questions_array.getJSONObject(j);
                                                 statement = open_question.getString("statement");
                                                 survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
-                                                OpenQuestion openQuestion = new OpenQuestion(statement, survey_id);
+                                                oq_id = open_question.getInt("id");
+                                                OpenQuestion openQuestion = new OpenQuestion(oq_id, statement, survey_id);
                                                 Thread oq = new Thread() {
                                                     @Override
                                                     public void run() {
@@ -370,11 +374,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             JSONObject alt_question;
                                             String statement;
                                             int survey_id;
+                                            int aq_id;
                                             try {
                                                 alt_question = alt_questions_array.getJSONObject(j);
                                                 statement = alt_question.getString("statement");
                                                 survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
-                                                ChoiceQuestion choiceQuestion = new ChoiceQuestion(statement, survey_id);
+                                                aq_id = alt_question.getInt("id");
+                                                ChoiceQuestion choiceQuestion = new ChoiceQuestion(aq_id, statement, survey_id);
                                                 Thread aq = new Thread() {
                                                     @Override
                                                     public void run() {
@@ -384,11 +390,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                             JSONObject alt;
                                                             int alt_question_id;
                                                             String content;
+                                                            int ac_id;
                                                             try {
                                                                 alt = simple_choice_array.getJSONObject(k);
                                                                 alt_question_id =(int)cid;
                                                                 content = alt.getString("content");
-                                                                SimpleChoice simpleChoice = new SimpleChoice(content, alt_question_id);
+                                                                ac_id = alt.getInt("id");
+                                                                SimpleChoice simpleChoice = new SimpleChoice(ac_id, content, alt_question_id);
                                                                 Thread sa = new Thread() {
                                                                     @Override
                                                                     public void run() {
@@ -413,11 +421,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                             JSONObject mult_question;
                                             String statement;
                                             int survey_id;
+                                            int mq_id;
                                             try {
                                                 mult_question = mult_questions_array.getJSONObject(j);
                                                 statement = mult_question.getString("statement");
                                                 survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
-                                                MultipleQuestion multipleQuestion = new MultipleQuestion(statement, survey_id);
+                                                mq_id = mult_question.getInt("id");
+                                                MultipleQuestion multipleQuestion = new MultipleQuestion(mq_id, statement, survey_id);
                                                 Thread mq = new Thread() {
                                                     @Override
                                                     public void run() {
@@ -427,11 +437,13 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                                             JSONObject mult = null;
                                                             int mult_question_id;
                                                             String content;
+                                                            int mc_id;
                                                             try {
                                                                 mult = multi_choice_array.getJSONObject(k);
                                                                 mult_question_id = (int)mid;
                                                                 content = mult.getString("content");
-                                                                MultipleChoice multipleChoice = new MultipleChoice(content, mult_question_id);
+                                                                mc_id = mult.getInt("id");
+                                                                MultipleChoice multipleChoice = new MultipleChoice(mc_id, content, mult_question_id);
                                                                 Thread ma = new Thread() {
                                                                     @Override
                                                                     public void run() {
@@ -588,10 +600,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     }
                 });
 
-
                 JSONObject encuesta = new JSONObject();
-
-
                 try {
                     JSONArray open_questions = new JSONArray();
                     JSONArray simple_questions = new JSONArray();
@@ -632,7 +641,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 networkManager.updateAnswers(new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-
                         try {
                             Log.d("Response", response.getString("status"));
                         } catch (JSONException e) {

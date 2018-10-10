@@ -19,13 +19,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 childColumns = "choiceQId",
                 onDelete = CASCADE)})
 public class SimpleChoice {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int simple_choice_id;
     @ColumnInfo(name = "content")
     private String content;
     private int choiceQId;
 
-    public SimpleChoice(String content, int choiceQId) {
+
+    public SimpleChoice(int simple_choice_id, String content, int choiceQId) {
+        this.simple_choice_id = simple_choice_id;
         this.content = content;
         this.choiceQId = choiceQId;
     }
