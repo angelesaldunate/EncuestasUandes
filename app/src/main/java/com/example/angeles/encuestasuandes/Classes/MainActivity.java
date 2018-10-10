@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -309,7 +310,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             setNameOnHeader(actual_profile.getName());
 
                         }
-                        appDatabase.encuestaDao().deleteAll();
+                       // appDatabase.encuestaDao().deleteAll();
                         Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
                             @Override
                             public void onResponse(JSONObject response) {
@@ -465,8 +466,14 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 Profile p = appDatabase.profileDao().getOneProfile(u.getUid());
                 int score = p.getAccumulated_score();
                 score+=en.getScore();
+                final int final_score = score;
                 p.setAccumulated_score(score);
                 appDatabase.profileDao().update(p);
+                Handler mainHandler = new Handler(getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() { setScoreOnHeader(final_score);}});
+
 
                 JSONObject encuesta = new JSONObject();
 
@@ -542,6 +549,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     }
 
+    public void getallencuestas() {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                appDatabase.encuestaDao().deleteAll();
+                Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        JSONArray surveys_json_array = response.optJSONArray("surveys");
+                        for (int i = 0; i < surveys_json_array.length(); i++) {
+                            JSONObject survey;
+                            String name;
+                            String description;
+                            int score;
+                            String start_date;
+                            String end_date;
+                            int max_responses;
+                            int min_responses;
+                            try {
+                                survey = surveys_json_array.getJSONObject(i);
+                                name = survey.getString("name");
+                                description = survey.getString("description");
+                                score = survey.getInt("score");
+                                start_date = survey.getString("start_date");
+                                end_date = survey.getString("end_date");
+                                max_responses = survey.getInt("max_answers");
+                                min_responses = survey.getInt("min_answers");
+                                Encuesta encuesta = new Encuesta(name, description, score,
+                                        start_date, end_date, max_responses, min_responses);
+                                Thread t = new Thread() {
+                                    @Override
+                                    public void run() {
+                                        appDatabase.encuestaDao().insert(encuesta);
+                                    }
+                                };
+                                t.start();
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                };
+                networkManager.getSurveys(listener, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("asd", error.toString());
+                    }
+                });
+
+
+
+    }
+        }).start();
+    }
 
 
 

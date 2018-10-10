@@ -27,7 +27,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class NetworkManager implements Executor {
-    public static final String BASE_URL = "http://192.168.0.27:3000/";
+    public static final String BASE_URL = "http://167.99.236.252/";
     private static NetworkManager mInstance;
     private static Context mCtx;
     private static String token = "";

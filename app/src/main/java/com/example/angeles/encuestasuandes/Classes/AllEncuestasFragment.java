@@ -49,6 +49,7 @@ public class AllEncuestasFragment extends Fragment {
         super.onCreate(savedInstanceState);
         credentialManager = mListener.getCredentialManage();
         appDatabase = mListener.getDb();
+
     }
 
     @Override
