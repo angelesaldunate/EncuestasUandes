@@ -58,7 +58,7 @@ public class Profile {
         return career_id;
     }
 
-    public void setCareer_id(String  career_id) {
+    public void setCareer_id(String career_id) {
         this.career_id = career_id;
     }
 

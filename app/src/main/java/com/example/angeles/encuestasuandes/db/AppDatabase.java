@@ -41,7 +41,7 @@ import com.example.angeles.encuestasuandes.db.Usuario.UserDao;
 
 
 @Database(entities = {User.class, Profile.class, Encuesta.class, OpenQuestion.class, MultipleQuestion.class, ChoiceQuestion.class, MultipleChoice.class, SimpleChoice.class
-        , Price.class, UserPrice.class, Category.class,  SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
+        , Price.class, UserPrice.class, Category.class, SimpleAnswer.class, MultipleAnswer.class, OpenAnswer.class}, version = 1)
 public abstract class AppDatabase extends RoomDatabase {
     private static AppDatabase INSTANCE;
 

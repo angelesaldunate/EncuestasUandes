@@ -5,8 +5,6 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.Query;
 import android.arch.persistence.room.Update;
 
-import com.example.angeles.encuestasuandes.db.Usuario.Profile;
-
 import java.util.List;
 
 /**

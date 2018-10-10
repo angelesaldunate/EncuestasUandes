@@ -7,23 +7,22 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.text.format.DateFormat;
-import android.util.Log;
-import android.view.View;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.example.angeles.encuestasuandes.ParaHacerRequest.JsonObjectArrayRequest;
 import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
 import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
@@ -36,22 +35,18 @@ import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 import com.example.angeles.encuestasuandes.db.Premio.Price;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
-import com.google.gson.JsonArray;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
-
-import static android.provider.AlarmClock.EXTRA_MESSAGE;
-
-import java.sql.Timestamp;
 import java.util.GregorianCalendar;
 import java.util.List;
+
+import static android.provider.AlarmClock.EXTRA_MESSAGE;
 
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, iComunicator {
@@ -60,12 +55,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static private AppDatabase appDatabase;
     static private SharedPreferences sharedPreferences;
     static private CredentialManage credentialManager;
-    private NetworkManager networkManager;
     ArrayList<ArrayList<Integer>> respuestas_multiples = new ArrayList<>();
     ArrayList<Integer> ide_respuestas_open = new ArrayList<>();
     ArrayList<String> respuesta_open = new ArrayList<>();
     ArrayList<Integer> respuestas_simple = new ArrayList<>();
-
+    private NetworkManager networkManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -142,7 +136,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     mc2.setMultiple_choice_id(3);
                     mc2.setContent("M!2222");
                     appDatabase.multipleChoiceDao().insertAll(mc, mc2);
-
 
 
                     ChoiceQuestion ch = new ChoiceQuestion();
@@ -310,243 +303,12 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             setNameOnHeader(actual_profile.getName());
 
                         }
-                       // appDatabase.encuestaDao().deleteAll();
-                        Response.Listener<JSONObject> listener = new Response.Listener<JSONObject>() {
-                            @Override
-                            public void onResponse(JSONObject response) {
-                                JSONArray surveys_json_array = response.optJSONArray("surveys");
-                                for (int i = 0; i < surveys_json_array.length(); i++) {
-                                    JSONObject survey;
-                                    String name;
-                                    String description;
-                                    int score;
-                                    String start_date;
-                                    String end_date;
-                                    int max_responses;
-                                    int min_responses;
-                                    try {
-                                        survey = surveys_json_array.getJSONObject(i);
-                                        name = survey.getString("name");
-                                        description = survey.getString("description");
-                                        score = survey.getInt("score");
-                                        start_date = survey.getString("start_date");
-                                        end_date = survey.getString("end_date");
-                                        max_responses = survey.getInt("max_answers");
-                                        min_responses = survey.getInt("min_answers");
-                                        Encuesta encuesta = new Encuesta(name, description, score,
-                                                start_date, end_date, max_responses, min_responses);
-                                        Thread t = new Thread() {
-                                            @Override
-                                            public void run() {
-                                                appDatabase.encuestaDao().insert(encuesta);
-                                            }
-                                        };
-                                        t.start();
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        };
-                        networkManager.getSurveys(listener, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.d("asd", error.toString());
-                            }
-                        });
-
-
+                        getallencuestas();
                     }
                 }).start();
                 setCredentialsOnHeader(email);
-
             }
         }
-    }
-
-    public void logOut() {
-        credentialManager.borrarCredenciales();
-        Intent intent = new Intent(this, LoginActivity.class);
-        intent.putExtra(EXTRA_MESSAGE, "Sent!");
-        //iniciaractividad solo si no existe anteriormente
-        startActivityForResult(intent, SEND_MESSAGE);
-
-    }
-
-    public void setCredentialsOnHeader(String email) {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView = (navigationView.getHeaderView(0));
-        TextView textViewmail = headerView.findViewById(R.id.nav_email);
-        textViewmail.setText(email);
-        Fragment fragment = new AllEncuestasFragment();
-        getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
-    }
-
-    public void setNameOnHeader(String name) {
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView = (navigationView.getHeaderView(0));
-        TextView textviewnombre = headerView.findViewById(R.id.nav_name);
-        textviewnombre.setText(name);
-    }
-    public void setScoreOnHeader(int score){
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
-        View headerView = (navigationView.getHeaderView(0));
-        TextView textviewnombre = headerView.findViewById(R.id.nav_score);
-        textviewnombre.setText(Integer.toString(score));
-
-    }
-
-    @Override
-    public SharedPreferences getSharedPreferences() {
-        return sharedPreferences;
-    }
-
-    @Override
-    public CredentialManage getCredentialManage() {
-        return credentialManager;
-    }
-
-    @Override
-    public AppDatabase getDb() {
-        return appDatabase;
-    }
-
-    @Override
-    public String getDate(Long time) {
-        Calendar cal = Calendar.getInstance();
-        cal.setTimeInMillis(time * 1000);
-        cal.add(Calendar.HOUR, -4);
-        String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
-        return date;
-    }
-
-    public String dateToTimestamp() {
-        Calendar cal = GregorianCalendar.getInstance();
-        cal.set(Calendar.DAY_OF_MONTH, 23);// I might have the wrong Calendar constant...
-        cal.set(Calendar.MONTH, 8);// -1 as month is zero-based
-        cal.set(Calendar.YEAR, 2019);
-        Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
-        return tstamp.toString();
-    }
-
-        public void updateProfile(final Profile perfiln) {
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                appDatabase.profileDao().update(perfiln);
-
-            }
-        }).start();
-        setNameOnHeader(perfiln.getName());
-
-    }
-    public  void addMultiple( ArrayList<Integer> list){
-        respuestas_multiples.add(list);
-    }
-    public void addSimple(int ide_simple){
-        respuestas_simple.add(ide_simple);
-    }
-    public void addOpen(int ide_open, String respuesta){
-        respuesta_open.add(respuesta);
-        ide_respuestas_open.add(ide_open);
-    }
-
-    public void finishEncuesta (int ide_encuesta){
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                Encuesta en = appDatabase.encuestaDao().getEncuestaById(ide_encuesta);
-                User u = appDatabase.userDao().getOneUser(credentialManager.getEmail());
-                Profile p = appDatabase.profileDao().getOneProfile(u.getUid());
-                int score = p.getAccumulated_score();
-                score+=en.getScore();
-                final int final_score = score;
-                p.setAccumulated_score(score);
-                appDatabase.profileDao().update(p);
-                Handler mainHandler = new Handler(getMainLooper());
-                mainHandler.post(new Runnable() {
-                    @Override
-                    public void run() { setScoreOnHeader(final_score);}});
-
-
-                JSONObject encuesta = new JSONObject();
-
-
-                try {
-                    JSONArray open_questions = new JSONArray();
-                    JSONArray simple_questions = new JSONArray();
-                    JSONArray multiple_questions = new JSONArray();
-
-                    for (int i = 0; i < respuesta_open.size(); i++) {
-                        JSONObject open_q = new JSONObject();
-                        open_q.put("id", ide_respuestas_open.get(i));
-                        open_q.put("content", respuesta_open.get(i));
-                        open_questions.put(open_q);
-                    }
-
-                    for (int i = 0; i < respuestas_multiples.size(); i++) {
-
-                        multiple_questions.put(new JSONArray(respuestas_multiples.get(i)));
-
-                    }
-                    for (int i = 0; i < respuestas_simple.size(); i++) {
-                        simple_questions.put(respuestas_simple.get(i));
-                    }
-
-
-                    encuesta.put("open_responses", open_questions);
-                    encuesta.put("alternative_responses",simple_questions);
-                    encuesta.put("multiple_responses",multiple_questions);
-
-
-
-                respuestas_multiples = new ArrayList<>();
-                ide_respuestas_open = new ArrayList<>();
-                respuesta_open = new ArrayList<>();
-                respuestas_simple = new ArrayList<>();
-
-
-                }
-                catch (JSONException e){
-                    e.printStackTrace();
-                }
-
-
-
-
-
-                networkManager.updateAnswers(new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject response) {
-
-                        try{
-                            Log.d("Response",response.getString("status"));}
-                            catch (JSONException e){
-
-                            }
-
-
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-
-                    }
-                }, encuesta);
-
-
-
-
-
-            }
-        }).start();
-
     }
 
     public void getallencuestas() {
@@ -599,13 +361,184 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         Log.d("asd", error.toString());
                     }
                 });
-
-
-
-    }
+            }
         }).start();
     }
 
+    public void logOut() {
+        credentialManager.borrarCredenciales();
+        Intent intent = new Intent(this, LoginActivity.class);
+        intent.putExtra(EXTRA_MESSAGE, "Sent!");
+        //iniciaractividad solo si no existe anteriormente
+        startActivityForResult(intent, SEND_MESSAGE);
+
+    }
+
+    public void setCredentialsOnHeader(String email) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textViewmail = headerView.findViewById(R.id.nav_email);
+        textViewmail.setText(email);
+        Fragment fragment = new AllEncuestasFragment();
+        getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).addToBackStack("null").commit();
+    }
+
+    public void setNameOnHeader(String name) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textviewnombre = headerView.findViewById(R.id.nav_name);
+        textviewnombre.setText(name);
+    }
+
+    public void setScoreOnHeader(int score) {
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        View headerView = (navigationView.getHeaderView(0));
+        TextView textviewnombre = headerView.findViewById(R.id.nav_score);
+        textviewnombre.setText(Integer.toString(score));
+
+    }
+
+    @Override
+    public SharedPreferences getSharedPreferences() {
+        return sharedPreferences;
+    }
+
+    @Override
+    public CredentialManage getCredentialManage() {
+        return credentialManager;
+    }
+
+    @Override
+    public AppDatabase getDb() {
+        return appDatabase;
+    }
+
+    @Override
+    public String getDate(Long time) {
+        Calendar cal = Calendar.getInstance();
+        cal.setTimeInMillis(time * 1000);
+        cal.add(Calendar.HOUR, -4);
+        String date = DateFormat.format("dd-MM-yyyy HH:mm:ss", cal).toString();
+        return date;
+    }
+
+    public String dateToTimestamp() {
+        Calendar cal = GregorianCalendar.getInstance();
+        cal.set(Calendar.DAY_OF_MONTH, 23);// I might have the wrong Calendar constant...
+        cal.set(Calendar.MONTH, 8);// -1 as month is zero-based
+        cal.set(Calendar.YEAR, 2019);
+        Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
+        return tstamp.toString();
+    }
+
+    public void updateProfile(final Profile perfiln) {
 
 
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                appDatabase.profileDao().update(perfiln);
+
+            }
+        }).start();
+        setNameOnHeader(perfiln.getName());
+
+    }
+
+    public void addMultiple(ArrayList<Integer> list) {
+        respuestas_multiples.add(list);
+    }
+
+    public void addSimple(int ide_simple) {
+        respuestas_simple.add(ide_simple);
+    }
+
+    public void addOpen(int ide_open, String respuesta) {
+        respuesta_open.add(respuesta);
+        ide_respuestas_open.add(ide_open);
+    }
+
+    public void finishEncuesta(int ide_encuesta) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                Encuesta en = appDatabase.encuestaDao().getEncuestaById(ide_encuesta);
+                User u = appDatabase.userDao().getOneUser(credentialManager.getEmail());
+                Profile p = appDatabase.profileDao().getOneProfile(u.getUid());
+                int score = p.getAccumulated_score();
+                score += en.getScore();
+                final int final_score = score;
+                p.setAccumulated_score(score);
+                appDatabase.profileDao().update(p);
+                Handler mainHandler = new Handler(getMainLooper());
+                mainHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        setScoreOnHeader(final_score);
+                    }
+                });
+
+
+                JSONObject encuesta = new JSONObject();
+
+
+                try {
+                    JSONArray open_questions = new JSONArray();
+                    JSONArray simple_questions = new JSONArray();
+                    JSONArray multiple_questions = new JSONArray();
+
+                    for (int i = 0; i < respuesta_open.size(); i++) {
+                        JSONObject open_q = new JSONObject();
+                        open_q.put("id", ide_respuestas_open.get(i));
+                        open_q.put("content", respuesta_open.get(i));
+                        open_questions.put(open_q);
+                    }
+
+                    for (int i = 0; i < respuestas_multiples.size(); i++) {
+
+                        multiple_questions.put(new JSONArray(respuestas_multiples.get(i)));
+
+                    }
+                    for (int i = 0; i < respuestas_simple.size(); i++) {
+                        simple_questions.put(respuestas_simple.get(i));
+                    }
+
+
+                    encuesta.put("open_responses", open_questions);
+                    encuesta.put("alternative_responses", simple_questions);
+                    encuesta.put("multiple_responses", multiple_questions);
+
+
+                    respuestas_multiples = new ArrayList<>();
+                    ide_respuestas_open = new ArrayList<>();
+                    respuesta_open = new ArrayList<>();
+                    respuestas_simple = new ArrayList<>();
+
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                networkManager.updateAnswers(new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+
+                        try {
+                            Log.d("Response", response.getString("status"));
+                        } catch (JSONException e) {
+
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+
+                    }
+                }, encuesta);
+            }
+        }).start();
+    }
 }

@@ -1,31 +1,21 @@
 package com.example.angeles.encuestasuandes.Classes;
 
 import android.content.Context;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Spinner;
 
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.example.angeles.encuestasuandes.ParaHacerRequest.NetworkManager;
 import com.example.angeles.encuestasuandes.R;
-import com.example.angeles.encuestasuandes.db.Alternativa.MultipleChoice;
 import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Encuestas.Encuesta;
-import com.example.angeles.encuestasuandes.db.Preguntas.ChoiceQuestion;
-import com.example.angeles.encuestasuandes.db.Preguntas.MultipleQuestion;
-import com.example.angeles.encuestasuandes.db.Preguntas.OpenQuestion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,6 +39,7 @@ public class AllEncuestasFragment extends Fragment {
         super.onCreate(savedInstanceState);
         credentialManager = mListener.getCredentialManage();
         appDatabase = mListener.getDb();
+        mListener.getallencuestas();
 
     }
 

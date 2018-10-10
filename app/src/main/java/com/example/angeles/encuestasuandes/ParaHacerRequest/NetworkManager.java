@@ -13,7 +13,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.angeles.encuestasuandes.Classes.CredentialManage;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,7 +21,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
 
@@ -153,7 +151,7 @@ public class NetworkManager implements Executor {
     }
 
     public void updateAnswers(Response.Listener<JSONObject> listener,
-                                           Response.ErrorListener errorListener, JSONObject payload) {
+                              Response.ErrorListener errorListener, JSONObject payload) {
 
         String url = BASE_URL + "app_calls/post_survey.json";
         makeApiCall(Request.Method.POST, url, payload, listener, errorListener);

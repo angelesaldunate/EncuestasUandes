@@ -48,7 +48,9 @@ public class Encuesta {
         this.max_responses = max_responses;
         this.min_responses = min_responses;
     }
-    public Encuesta(){}
+
+    public Encuesta() {
+    }
 
     public int getEnid() {
         return enid;

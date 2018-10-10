@@ -23,12 +23,14 @@ public interface iComunicator {
     public void updateProfile(Profile profile);
 
     public void finishEncuesta(int ide_encuesta);
-    public  void addMultiple( ArrayList<Integer> list);
+
+    public void addMultiple(ArrayList<Integer> list);
+
     public void addSimple(int ide_simple);
+
     public void addOpen(int ide_open, String respuesta);
+
     public void getallencuestas();
 
 
-
-
-    }
+}
