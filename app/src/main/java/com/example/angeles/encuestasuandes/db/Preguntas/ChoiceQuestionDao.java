@@ -27,6 +27,8 @@ public interface ChoiceQuestionDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     void insertAll(ChoiceQuestion... choiceQuestions);
+    @Insert
+    long insert(ChoiceQuestion choiceQuestion);
 
 
     @Query("DELETE FROM choicequestion")

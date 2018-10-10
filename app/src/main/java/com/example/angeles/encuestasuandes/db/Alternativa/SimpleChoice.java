@@ -25,6 +25,13 @@ public class SimpleChoice {
     private String content;
     private int choiceQId;
 
+    public SimpleChoice(String content, int choiceQId) {
+        this.content = content;
+        this.choiceQId = choiceQId;
+    }
+
+    public SimpleChoice() {
+    }
 
     public int getSimple_choice_id() {
         return simple_choice_id;

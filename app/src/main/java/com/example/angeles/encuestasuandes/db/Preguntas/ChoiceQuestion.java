@@ -25,6 +25,13 @@ public class ChoiceQuestion {
     private String enunciado;
     private int eId;
 
+    public ChoiceQuestion(String enunciado, int eId) {
+        this.enunciado = enunciado;
+        this.eId = eId;
+    }
+
+    public ChoiceQuestion() {
+    }
 
     public int getEId() {
         return eId;

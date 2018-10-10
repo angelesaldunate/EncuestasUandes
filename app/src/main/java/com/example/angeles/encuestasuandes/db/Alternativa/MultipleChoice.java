@@ -25,6 +25,14 @@ public class MultipleChoice {
     private String content;
     private int multipleQId;
 
+    public MultipleChoice() {
+    }
+
+    public MultipleChoice(String content, int multipleQId) {
+
+        this.content = content;
+        this.multipleQId = multipleQId;
+    }
 
     public int getMultiple_choice_id() {
         return multiple_choice_id;

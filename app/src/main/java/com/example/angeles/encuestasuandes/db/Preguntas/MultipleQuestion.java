@@ -25,6 +25,13 @@ public class MultipleQuestion {
     private String enunciado;
     private int eId;
 
+    public MultipleQuestion(String enunciado, int eId) {
+        this.enunciado = enunciado;
+        this.eId = eId;
+    }
+
+    public MultipleQuestion() {
+    }
 
     public int getEId() {
         return eId;

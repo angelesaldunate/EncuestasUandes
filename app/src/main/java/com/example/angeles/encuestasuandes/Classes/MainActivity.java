@@ -303,7 +303,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                             setNameOnHeader(actual_profile.getName());
 
                         }
-                        getallencuestas();
                     }
                 }).start();
                 setCredentialsOnHeader(email);
@@ -345,6 +344,112 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                                     @Override
                                     public void run() {
                                         appDatabase.encuestaDao().insert(encuesta);
+                                        JSONArray open_questions_array = survey.optJSONArray("OpenQuestions");
+                                        for (int j = 0; j < open_questions_array.length(); j++) {
+                                            JSONObject open_question;
+                                            String statement;
+                                            int survey_id;
+                                            try {
+                                                open_question = open_questions_array.getJSONObject(j);
+                                                statement = open_question.getString("statement");
+                                                survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
+                                                OpenQuestion openQuestion = new OpenQuestion(statement, survey_id);
+                                                Thread oq = new Thread() {
+                                                    @Override
+                                                    public void run() {
+                                                        appDatabase.openQuestionDao().insert(openQuestion);
+                                                    }
+                                                };
+                                                oq.start();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        JSONArray alt_questions_array = survey.optJSONArray("AlternativeQuestions");
+                                        for (int j = 0; j < alt_questions_array.length(); j++) {
+                                            JSONObject alt_question;
+                                            String statement;
+                                            int survey_id;
+                                            try {
+                                                alt_question = alt_questions_array.getJSONObject(j);
+                                                statement = alt_question.getString("statement");
+                                                survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
+                                                ChoiceQuestion choiceQuestion = new ChoiceQuestion(statement, survey_id);
+                                                Thread aq = new Thread() {
+                                                    @Override
+                                                    public void run() {
+                                                        long cid = appDatabase.choiceQuestionDao().insert(choiceQuestion);
+                                                        JSONArray simple_choice_array = alt_question.optJSONArray("Alternatives");
+                                                        for (int k = 0; k < simple_choice_array.length(); k++){
+                                                            JSONObject alt;
+                                                            int alt_question_id;
+                                                            String content;
+                                                            try {
+                                                                alt = simple_choice_array.getJSONObject(k);
+                                                                alt_question_id =(int)cid;
+                                                                content = alt.getString("content");
+                                                                SimpleChoice simpleChoice = new SimpleChoice(content, alt_question_id);
+                                                                Thread sa = new Thread() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        appDatabase.simpleChoiceDao().insert(simpleChoice);
+                                                                    }
+                                                                };
+                                                                sa.start();
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            }
+
+                                                        }
+                                                    }
+                                                };
+                                                aq.start();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                        JSONArray mult_questions_array = survey.optJSONArray("MultipleQuestions");
+                                        for (int j = 0; j < mult_questions_array.length(); j++) {
+                                            JSONObject mult_question;
+                                            String statement;
+                                            int survey_id;
+                                            try {
+                                                mult_question = mult_questions_array.getJSONObject(j);
+                                                statement = mult_question.getString("statement");
+                                                survey_id = appDatabase.encuestaDao().getOneEncuestabyname(name).getEnid();
+                                                MultipleQuestion multipleQuestion = new MultipleQuestion(statement, survey_id);
+                                                Thread mq = new Thread() {
+                                                    @Override
+                                                    public void run() {
+                                                        long mid = appDatabase.multipleQuestionDao().insert(multipleQuestion);
+                                                        JSONArray multi_choice_array = mult_question.optJSONArray("MultipleAlternatives");
+                                                        for (int k = 0; k < multi_choice_array.length(); k++){
+                                                            JSONObject mult = null;
+                                                            int mult_question_id;
+                                                            String content;
+                                                            try {
+                                                                mult = multi_choice_array.getJSONObject(k);
+                                                                mult_question_id = (int)mid;
+                                                                content = mult.getString("content");
+                                                                MultipleChoice multipleChoice = new MultipleChoice(content, mult_question_id);
+                                                                Thread ma = new Thread() {
+                                                                    @Override
+                                                                    public void run() {
+                                                                        appDatabase.multipleChoiceDao().insert(multipleChoice);
+                                                                    }
+                                                                };
+                                                                ma.start();
+                                                            } catch (JSONException e) {
+                                                                e.printStackTrace();
+                                                            }
+                                                        }
+                                                    }
+                                                };
+                                                mq.start();
+                                            } catch (JSONException e) {
+                                                e.printStackTrace();
+                                            }
+                                        }
                                     }
                                 };
                                 t.start();
@@ -364,6 +469,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             }
         }).start();
     }
+
+
 
     public void logOut() {
         credentialManager.borrarCredenciales();
