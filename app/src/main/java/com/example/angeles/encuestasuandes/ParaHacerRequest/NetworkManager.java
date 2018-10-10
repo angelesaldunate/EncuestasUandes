@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.concurrent.Executor;
 
 public class NetworkManager implements Executor {
-    public static final String BASE_URL = "http://192.168.0.27:3000/";
+    public static final String BASE_URL = "http://167.99.236.252/";
     private static NetworkManager mInstance;
     private static Context mCtx;
     private static String token = "";
@@ -176,7 +176,11 @@ public class NetworkManager implements Executor {
             user_hash.put("first_name", profile.getName());
             user_hash.put("last_name", profile.getLast_name());
             user_hash.put("rut", profile.getRut());
-            user_hash.put("gender", profile.getGender());
+            String gender = profile.getGender();
+            if (gender == "Masculino") gender = "male";
+            else if (gender == "Femenino") gender = "female";
+            else gender = "non-assigned";
+            user_hash.put("gender", gender);
             user_hash.put("birthdate", profile.getBirthdate());
             payload.put("user", user_hash);
 

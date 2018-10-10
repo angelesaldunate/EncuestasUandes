@@ -18,14 +18,15 @@ import static android.arch.persistence.room.ForeignKey.CASCADE;
                 childColumns = "eId",
                 onDelete = CASCADE)})
 public class MultipleQuestion {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     private int multiple_q_id;
 
     @ColumnInfo(name = "enunciado")
     private String enunciado;
     private int eId;
 
-    public MultipleQuestion(String enunciado, int eId) {
+    public MultipleQuestion(int multiple_q_id, String enunciado, int eId) {
+        this.multiple_q_id = multiple_q_id;
         this.enunciado = enunciado;
         this.eId = eId;
     }
