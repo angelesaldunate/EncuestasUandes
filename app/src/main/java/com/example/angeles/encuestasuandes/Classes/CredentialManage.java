@@ -60,6 +60,17 @@ public class CredentialManage {
 
     }
 
+    public void saveFirebaseToken(String token) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("firebase_token", token);
+        editor.apply();
+    }
+
+    public String getFirebaseToken() {
+        String token = preferences.getString("firebase_token", null);
+        return token;
+    }
+
     public void borrarCredenciales() {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();

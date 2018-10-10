@@ -100,8 +100,6 @@ public class PreferencesFragment extends Fragment {
 
         Thread thread = new Thread() {
             public void run() {
-                Category[] categories = appDatabase.categoryDao().getAllCategory();
-                if (categories.length == 0) {
 
                     networkManager.getCategories(new Response.Listener<JSONObject>() {
                         @Override
@@ -185,7 +183,7 @@ public class PreferencesFragment extends Fragment {
                                     builder.setCancelable(false);
 
                                     // Set a title for alert dialog
-                                    builder.setTitle("Your preferred colors?");
+                                    builder.setTitle("Seleccione categorías de interés");
 
                                     // Set the positive/yes button click listener
                                     builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
@@ -262,8 +260,15 @@ public class PreferencesFragment extends Fragment {
                                         public void run() {
                                             AlertDialog dialog = builder.create();
                                             // Display the alert dialog on interface
-                                            dialog.show();
+                                            if(categories.length!=0){
+                                            dialog.show();}
+                                            else
+                                                {
+
+                                                    Toast.makeText(getContext(),"No hay categorías para mostrar",Toast.LENGTH_LONG).show();
+                                            }
                                         }
+
                                     });
 
 
@@ -276,149 +281,7 @@ public class PreferencesFragment extends Fragment {
                         public void onErrorResponse(VolleyError error) {
                         }
                     });
-                } else {
 
-                    String[] names = new String[categories.length];
-
-                    for (int i = 0; i < categories.length; i++) {
-
-                        names[i] = categories[i].getName();
-                    }
-                    boolean[] checked_cats = new boolean[categories.length];
-
-                    for (int i = 0; i < categories.length; i++) {
-
-                        checked_cats[i] = categories[i].isSelected();
-                    }
-
-
-                    // Boolean array for initial selected items
-
-                    // Convert the color array to list
-                    final List<String> namesList = Arrays.asList(names);
-
-                    // Set multiple choice items for alert dialog
-                /*
-                    AlertDialog.Builder setMultiChoiceItems(CharSequence[] items, boolean[]
-                    checkedItems, DialogInterface.OnMultiChoiceClickListener listener)
-                        Set a list of items to be displayed in the dialog as the content,
-                        you will be notified of the selected item via the supplied listener.
-                 */
-                /*
-                    DialogInterface.OnMultiChoiceClickListener
-                    public abstract void onClick (DialogInterface dialog, int which, boolean isChecked)
-
-                        This method will be invoked when an item in the dialog is clicked.
-
-                        Parameters
-                        dialog The dialog where the selection was made.
-                        which The position of the item in the list that was clicked.
-                        isChecked True if the click checked the item, else false.
-                 */
-                    builder.setMultiChoiceItems(names, checked_cats, new DialogInterface.OnMultiChoiceClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
-                            // Update the current focused item's checked status
-                            checked_cats[which] = isChecked;
-
-                            // Get the current focused item
-                            String currentItem = namesList.get(which);
-
-                            // Notify the current action
-                            Toast.makeText(getContext(),
-                                    currentItem + " " + isChecked, Toast.LENGTH_SHORT).show();
-                        }
-                    });
-
-                    // Specify the dialog is not cancelable
-                    builder.setCancelable(false);
-
-                    // Set a title for alert dialog
-                    builder.setTitle("Your preferred colors?");
-
-                    // Set the positive/yes button click listener
-                    builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Do something when click positive button
-                            // tv.setText("Your preferred colors..... \n");
-                            ArrayList<Integer> interest_categories_ids = new ArrayList<>();
-                            JSONObject payload = new JSONObject();
-                            JSONArray interest_categories_ja = new JSONArray();
-                            for (int i = 0; i < checked_cats.length; i++) {
-                                boolean checked = checked_cats[i];
-                                categories[i].setSelected(checked);
-                                if (checked) {
-                                    //          tv.setText(tv.getText() + colorsList.get(i) + "\n");
-
-                                    interest_categories_ids.add(categories[i].getId());
-                                    interest_categories_ja.put(categories[i].getId());
-                                }
-
-                            }
-
-                            try {
-                                payload.put("interest_categories", interest_categories_ja);
-                            } catch (JSONException e) {
-
-                                e.printStackTrace();
-                            }
-                            networkManager.updateInterestedCategories(new Response.Listener<JSONObject>() {
-                                @Override
-                                public void onResponse(JSONObject response) {
-
-
-                                    Thread t = new Thread() {
-
-
-                                        @Override
-                                        public void run() {
-                                            appDatabase.categoryDao().updateCategories(categories);
-                                        }
-                                    };
-                                    t.start();
-
-                                }
-                            }, new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError error) {
-
-                                }
-                            }, payload);
-
-
-                        }
-                    });
-
-                    // Set the negative/no button click listener
-                    builder.setNegativeButton("No", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Do something when click the negative button
-                        }
-                    });
-
-                    // Set the neutral/cancel button click listener
-                    builder.setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Do something when click the neutral button
-                        }
-                    });
-
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            AlertDialog dialog = builder.create();
-                            // Display the alert dialog on interface
-                            dialog.show();
-                        }
-                    });
-
-
-                }
             }
         };
 

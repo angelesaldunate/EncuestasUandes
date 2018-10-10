@@ -6,7 +6,7 @@ android {
 
         applicationId "com.example.angeles.encuestasuandes"
 
-        minSdkVersion 23
+        minSdkVersion 26
         targetSdkVersion 27
 
         versionCode 1

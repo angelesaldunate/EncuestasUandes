@@ -16,6 +16,10 @@ import com.example.angeles.encuestasuandes.db.AppDatabase;
 import com.example.angeles.encuestasuandes.db.Usuario.Profile;
 import com.example.angeles.encuestasuandes.db.Usuario.User;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 
 public class ProfileFragment extends Fragment {
     private static AppDatabase appDatabase;
@@ -64,11 +68,38 @@ public class ProfileFragment extends Fragment {
                         @Override
                         public void run() {
 
-                            name.setText(current_profile.getName().toString() + " " + current_profile.getLast_name().toString());
-                            mail.setText(credentialManager.getEmail());
-                            rut.setText(current_profile.getRut());
-                            genero.setText(current_profile.getGender());
-                            fecha.setText(current_profile.getBirthdate());
+
+                            String without_field = "Sin asignar";
+
+                            if(current_profile.getLast_name()==null){
+
+                                name.setText(without_field);
+                            }else{
+                                name.setText(current_profile.getName().toString() + " " + current_profile.getLast_name().toString());
+                            }
+
+                            mail.setText(credentialManager.getEmail().toString());
+
+                            if(current_profile.getRut() == null){
+                                rut.setText(without_field);
+                            }
+                            else{
+                                rut.setText(current_profile.getRut().toString());
+                            }
+                            if (current_profile.getGender() == null){
+
+                                genero.setText(without_field);
+                            }else{
+                                genero.setText(current_profile.getGender().toString());
+                            }
+                            if (current_profile.getBirthdate() == null){
+
+                                fecha.setText(without_field);
+
+                            }else{
+                                fecha.setText(current_profile.getBirthdate().toString());
+
+                            }
                             carrera.setText(current_profile.getCareer_id());
 
                         }

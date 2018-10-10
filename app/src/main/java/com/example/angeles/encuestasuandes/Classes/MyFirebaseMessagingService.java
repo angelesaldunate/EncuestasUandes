@@ -1,4 +1,5 @@
 package com.example.angeles.encuestasuandes.Classes;
+import android.app.Notification;
 import android.app.NotificationChannel;
         import android.app.NotificationManager;
         import android.app.PendingIntent;
@@ -16,6 +17,16 @@ import android.app.NotificationChannel;
         import com.google.firebase.messaging.FirebaseMessagingService;
         import com.google.firebase.messaging.RemoteMessage;
         import com.google.firebase.R;
+        import com.example.angeles.encuestasuandes.R.color;
+        import com.example.angeles.encuestasuandes.R.drawable;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+
+import org.json.JSONObject;
+
+import java.util.Map;
+
 /**
  * Created by e440 on 09-10-18.
  */
@@ -51,8 +62,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
         // Not getting messages here? See why this may be: https://goo.gl/39bRNJ
         Log.d(TAG, "From: " + remoteMessage.getFrom());
 
+        Map<String,String> message_data = remoteMessage.getData();
+        sendNotification(message_data.get("message"));
         // Check if message contains a data payload.
-        if (remoteMessage.getData().size() > 0) {
+       if (remoteMessage.getData().size() > 0) {
             Log.d(TAG, "Message data payload: " + remoteMessage.getData());
 
             if (/* Check if data needs to be processed by long running job */ true) {
@@ -86,7 +99,8 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
     @Override
     public void onNewToken(String token) {
         Log.d(TAG, "Refreshed token: " + token);
-
+        CredentialManage credentialManage = CredentialManage.getInstance(this);
+        credentialManage.saveFirebaseToken(token);
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
         // Instance ID token to your app server.
@@ -133,10 +147,39 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService{
      * @param messageBody FCM message body received.
      */
     private void sendNotification(String messageBody) {
-        Intent intent = new Intent(this, MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent,
-                PendingIntent.FLAG_ONE_SHOT);
+        NotificationManager notificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+        String channelId = "some_channel_id";
+        CharSequence channelName = "Some Channel";
+        int importance = NotificationManager.IMPORTANCE_LOW;
+        NotificationChannel notificationChannel = new NotificationChannel(channelId, channelName, importance);
+        notificationChannel.enableLights(true);
+        notificationChannel.setLightColor(color.abc_btn_colored_text_material);
+        notificationChannel.enableVibration(true);
+        notificationChannel.setVibrationPattern(new long[]{100, 200, 300, 400, 500, 400, 300, 200, 400});
+        notificationManager.createNotificationChannel(notificationChannel);
+
+
+        Context mCtx = getApplicationContext();
+        NotificationManager nm = (NotificationManager)mCtx.getSystemService(NOTIFICATION_SERVICE);
+        Notification.Builder builder = new Notification.Builder(mCtx);
+        builder.setChannelId(channelId);
+        Intent notificationIntent = new Intent(mCtx, MainActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(mCtx,0,notificationIntent,0);
+
+        //set
+        builder.setContentIntent(contentIntent);
+        builder.setSmallIcon(drawable.ic_notification);
+            builder.setContentText(messageBody);
+
+
+        builder.setContentTitle( mCtx.getApplicationInfo().loadLabel(mCtx.getPackageManager()).toString());
+        builder.setAutoCancel(true);
+        builder.setDefaults(Notification.DEFAULT_ALL);
+
+        Notification notification = builder.build();
+        nm.notify((int)System.currentTimeMillis(),notification);
 
 //        String channelId = getString(android.support.v4.R.string.default_notification_channel_id);
 //        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);

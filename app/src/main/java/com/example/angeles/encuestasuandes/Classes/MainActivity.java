@@ -1,11 +1,13 @@
 package com.example.angeles.encuestasuandes.Classes;
 
+import android.app.ProgressDialog;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -19,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -39,6 +42,7 @@ import com.google.firebase.FirebaseApp;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.HttpURLConnection;
 import java.util.Calendar;
 
 import static android.provider.AlarmClock.EXTRA_MESSAGE;
@@ -56,6 +60,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     static private CredentialManage credentialManager;
     private NetworkManager networkManager;
 
+    Handler handler = new Handler();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -375,19 +380,54 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         Timestamp tstamp = new Timestamp(cal.getTimeInMillis());
         return tstamp.toString();
     }
-
-        public void updateProfile(final Profile perfiln) {
-
+       public void updateProfile(final Profile perfiln) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
 
-                appDatabase.profileDao().update(perfiln);
+
+                networkManager.updateProfile(new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        int status = response.optInt("status");
+
+                        if (status == HttpURLConnection.HTTP_OK){
+
+                            Thread t = new Thread(){
+                                @Override
+                                public void run() {
+
+                                    appDatabase.profileDao().update(perfiln);
+                                    handler.post(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Toast.makeText(getApplicationContext(),"Perfil actualizado",Toast.LENGTH_LONG).show();
+
+                                            Fragment fragment = new ProfileFragment();
+                                            getSupportFragmentManager().beginTransaction().replace(R.id.framnew, fragment).commit();
+                                        }
+                                    });
+
+                                }
+                            };
+                            t.start();
+                             }
+                        else{
+                            String message = response.optString("message");
+                            Toast.makeText(getApplicationContext(),message,Toast.LENGTH_LONG).show();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Toast.makeText(getApplicationContext(),"Error de conexión",Toast.LENGTH_LONG).show();
+                   }
+                }, perfiln);
 
             }
         }).start();
-        setNameOnHeader(perfiln.getName());
+            setNameOnHeader(perfiln.getName());
 
     }
 
